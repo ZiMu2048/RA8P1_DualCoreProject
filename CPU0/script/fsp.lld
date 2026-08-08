@@ -1,0 +1,25 @@
+/*
+                  Linker File for Renesas FSP
+*/
+
+INCLUDE memory_regions.lld
+INCLUDE fsp_gen.lld
+
+/*
+ * CPU0拥有的双核共享SDRAM区域。
+ * NOLOAD避免调试下载器在SDRAM初始化前写入该区域。
+ * KEEP防止--gc-sections删除共享协议对象。
+ */
+MEMORY
+{
+    SHARED_MEM (rwx) : ORIGIN = 0x68800000, LENGTH = 0x00200000
+}
+
+SECTIONS
+{
+    .shared_mem (NOLOAD) : ALIGN(32)
+    {
+        KEEP(*(.shared_mem))
+        . = ALIGN(32);
+    } > SHARED_MEM
+}
