@@ -183,7 +183,8 @@ void vin_callback(capture_callback_args_t * p_args)
                     g_camera_frame_sequence++;
                     __DMB();
                     (void) xEventGroupSetBitsFromISR(g_ai_app_event,
-                                                     CAMERA_FRAME_READY,
+                                                     CAMERA_FRAME_READY |
+                                                     AI_INFERENCE_INPUT_IMAGE_READY,
                                                      &higher_priority_task_woken);
                 }
                 else
