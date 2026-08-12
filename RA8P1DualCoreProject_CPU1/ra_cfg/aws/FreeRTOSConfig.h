@@ -123,7 +123,7 @@ FSP_HEADER
 #define configSUPPORT_STATIC_ALLOCATION (1)
 #endif
 #ifndef configSUPPORT_DYNAMIC_ALLOCATION
-#define configSUPPORT_DYNAMIC_ALLOCATION (0)
+#define configSUPPORT_DYNAMIC_ALLOCATION (1)
 #endif
 #ifndef configTOTAL_HEAP_SIZE
 #define configTOTAL_HEAP_SIZE (1024)

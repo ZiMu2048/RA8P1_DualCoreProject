@@ -671,6 +671,9 @@ FSP Configuration
   Module "Google TFLM CMSIS-NN Kernel"
   Module "Arm CMSIS NN Library Source"
   Module "Arm CMSIS DSP Library Source"
+  Module "IPC (r_ipc)"
+    Parameter Checking: Default (BSP)
+    
   FreeRTOS
     General: Custom FreeRTOSConfig.h: 
     General: Use Preemption: Enabled
@@ -1155,6 +1158,27 @@ FSP Configuration
             
         Instance "Arm Ethos-U Profiler"
           Instance "Arm CMSIS View Library Source"
+  Thread "IPC Thread"
+    Symbol: ipc_thread
+    Name: IPC Thread
+    Stack size (bytes): 1024
+    Priority: 1
+    Thread Context: NULL
+    Memory Allocation: Static
+    Allocate Secure Context: Enable
+    
+    Instance "g_ipc0 IPC (r_ipc)"
+      Name: g_ipc0
+      Channel: 0
+      Callback: NULL
+      Interrupt Priority: Disabled
+      
+    Instance "g_ipc1 IPC (r_ipc)"
+      Name: g_ipc1
+      Channel: 0
+      Callback: NULL
+      Interrupt Priority: Disabled
+      
   Object "g_ai_app_event Event Group"
     Symbol: g_ai_app_event
     Memory Allocation: Static

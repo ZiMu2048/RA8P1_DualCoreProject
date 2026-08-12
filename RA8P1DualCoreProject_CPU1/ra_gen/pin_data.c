@@ -2,8 +2,49 @@
 #include "bsp_api.h"
 #include "r_ioport.h"
 
-const ioport_cfg_t g_bsp_pin_cfg =
-		{ .number_of_pins = 0, .p_pin_cfg_data = NULL };
+const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
+
+{ .pin = BSP_IO_PORT_03_PIN_03, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_03_PIN_04, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_04_PIN_00, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_04_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_04_PIN_09, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_MID
+		| (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_IIC) },
+
+{ .pin = BSP_IO_PORT_04_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_MID
+		| (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_IIC) },
+
+{ .pin = BSP_IO_PORT_05_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_05_PIN_02, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_06_PIN_04, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_06_PIN_05, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_08_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+
+{ .pin = BSP_IO_PORT_08_PIN_11, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+		| (uint32_t) IOPORT_PERIPHERAL_GPT1) }, };
+
+const ioport_cfg_t g_bsp_pin_cfg = { .number_of_pins =
+		sizeof(g_bsp_pin_cfg_data) / sizeof(ioport_pin_cfg_t), .p_pin_cfg_data =
+		&g_bsp_pin_cfg_data[0], };
 
 #if BSP_TZ_SECURE_BUILD
 

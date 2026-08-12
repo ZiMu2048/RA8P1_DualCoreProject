@@ -1,1 +1,31 @@
-/.metadata/
+# ===== e² studio / IDE 本地元数据 =====
+.metadata/
+.settings/
+.clangd/
+
+# ===== 构建产物 =====
+Debug/
+Release/
+**/Debug/
+**/Release/
+*.o
+*.d
+*.elf
+*.map
+*.srec
+*.hex
+*.bin
+*.sbd
+compile_commands.json
+
+# ===== clangd 符号索引缓存 =====
+.cache/
+
+# ===== 调试器日志 =====
+JLinkLog.log
+*.jlink
+*.elf.jlink
+
+# ===== 系统杂项 =====
+Thumbs.db
+.DS_Store

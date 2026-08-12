@@ -424,6 +424,10 @@
       <description>TES DAVE 2D Drawing Engine</description>
       <originalPack>TES.Dave2D.3.8.0+fsp.6.5.0.pack</originalPack>
     </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ipc" variant="" vendor="Renesas" version="6.5.0">
+      <description>IPC</description>
+      <originalPack>Renesas.RA.6.5.0.pack</originalPack>
+    </component>
   </raComponentSelection>
   <raElcConfiguration/>
   <raIcuConfiguration/>
@@ -817,6 +821,18 @@
     <module id="module.google.tflm.kernel.cmsis.nn.120100606"/>
     <module id="module.arm.cmsis.nn.1214982771"/>
     <module id="module.arm.cmsis.dsp.1840559914"/>
+    <module id="module.driver.ipc_on_ipc.860336578">
+      <property id="module.driver.ipc.name" value="g_ipc0"/>
+      <property id="module.driver.ipc.channel" value="enum.driver.ipc.channel.0"/>
+      <property id="module.driver.ipc.callback" value="NULL"/>
+      <property id="module.driver.ipc.ipl" value="_disabled"/>
+    </module>
+    <module id="module.driver.ipc_on_ipc.1670802994">
+      <property id="module.driver.ipc.name" value="g_ipc1"/>
+      <property id="module.driver.ipc.channel" value="enum.driver.ipc.channel.0"/>
+      <property id="module.driver.ipc.callback" value="NULL"/>
+      <property id="module.driver.ipc.ipl" value="_disabled"/>
+    </module>
     <object id="rtos.awsfreertos.object.flags.1283815676">
       <property id="rtos.awsfreertos.object.flags.symbol" value="g_ai_app_event"/>
       <property id="rtos.awsfreertos.object.flags.allocation" value="rtos.awsfreertos.object.flags.allocation.static"/>
@@ -882,6 +898,20 @@
         </stack>
       </stack>
     </context>
+    <context id="rtos.awsfreertos.thread.957061548">
+      <property id="_symbol" value="ipc_thread"/>
+      <property id="rtos.awsfreertos.thread.name" value="IPC Thread"/>
+      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.priority" value="1"/>
+      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
+      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
+      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
+      <stack module="module.driver.ipc_on_ipc.860336578"/>
+      <stack module="module.driver.ipc_on_ipc.1670802994"/>
+    </context>
+    <config id="config.driver.ipc">
+      <property id="config.driver.ipc.param_checking_enable" value="config.driver.ipc.param_checking_enable.bsp"/>
+    </config>
     <config id="config.driver.iic_master">
       <property id="config.driver.iic_master.param_checking_enable" value="config.driver.iic_master.param_checking_enable.bsp"/>
       <property id="config.driver.iic_master.dtc_enable" value="config.driver.iic_master.dtc_enable.enabled"/>

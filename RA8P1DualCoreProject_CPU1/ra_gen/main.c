@@ -3,8 +3,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
-extern void new_thread0_create(void);
-extern TaskHandle_t new_thread0;
+extern void imu_thread_create(void);
+extern TaskHandle_t imu_thread;
 uint32_t g_fsp_common_thread_count;
 bool g_fsp_common_initialized;
 SemaphoreHandle_t g_fsp_common_initialized_semaphore;
@@ -94,7 +94,7 @@ int main(void) {
 	}
 
 	/* Init RTOS tasks. */
-	new_thread0_create();
+	imu_thread_create();
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
