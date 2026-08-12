@@ -3,14 +3,12 @@
  */
 
 #include "AI/ai_preprocess.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 
 #if !defined(__ARM_FEATURE_MVE) || ((__ARM_FEATURE_MVE & 1) == 0)
  #error "Arm Helium MVE integer instructions are not enabled"
 #endif
-
 #include <arm_mve.h>
 
 #define AI_PREPROCESS_PIXELS_PER_VECTOR    (8U)

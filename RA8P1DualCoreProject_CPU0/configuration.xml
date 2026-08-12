@@ -641,9 +641,9 @@
       <property id="module.driver.display.input0.lines_repeat_times" value="0"/>
       <property id="module.driver.display.layer0.fade_control" value="module.driver.display.layer0.fade_control.fade_control_none"/>
       <property id="module.driver.display.layer0.fade_speed" value="255"/>
-      <property id="module.driver.display.input1.enable" value="module.driver.display.input1.enable.false"/>
-      <property id="module.driver.display.input1.hsize" value="1024"/>
-      <property id="module.driver.display.input1.vsize" value="600"/>
+      <property id="module.driver.display.input1.enable" value="module.driver.display.input1.enable.true"/>
+      <property id="module.driver.display.input1.hsize" value="800"/>
+      <property id="module.driver.display.input1.vsize" value="480"/>
       <property id="module.driver.display.layer1.coordinate.x" value="0"/>
       <property id="module.driver.display.layer1.coordinate.y" value="0"/>
       <property id="module.driver.display.input1.buffer_name" value="fb_foreground"/>
@@ -993,6 +993,7 @@
     <symbolicName propertyId="p300.symbolic_name" value="SDRAM_DQ2"/>
     <symbolicName propertyId="p301.symbolic_name" value="SDRAM_DQ1"/>
     <symbolicName propertyId="p302.symbolic_name" value="SDRAM_DQ0"/>
+    <symbolicName propertyId="p406.symbolic_name" value="LED_GPIO"/>
     <symbolicName propertyId="p503.symbolic_name" value="SDRAM_A4_32BIT"/>
     <symbolicName propertyId="p504.symbolic_name" value="SDRAM_A5_32BIT"/>
     <symbolicName propertyId="p505.symbolic_name" value="SDRAM_A6_32BIT"/>
@@ -1143,6 +1144,9 @@
       <configSetting altId="p302.sdram.dq0" configurationId="p302"/>
       <configSetting altId="p302.gpio_speed.gpio_speed_h" configurationId="p302.gpio_drivecapacity"/>
       <configSetting altId="p302.gpio_mode.gpio_mode_peripheral" configurationId="p302.gpio_mode"/>
+      <configSetting altId="p406.output.high" configurationId="p406"/>
+      <configSetting altId="p406.gpio_speed.gpio_speed_hh" configurationId="p406.gpio_drivecapacity"/>
+      <configSetting altId="p406.gpio_mode.gpio_mode_out.high" configurationId="p406.gpio_mode"/>
       <configSetting altId="p503.sdram.a6" configurationId="p503"/>
       <configSetting altId="p503.gpio_speed.gpio_speed_h" configurationId="p503.gpio_drivecapacity"/>
       <configSetting altId="p503.gpio_mode.gpio_mode_peripheral" configurationId="p503.gpio_mode"/>

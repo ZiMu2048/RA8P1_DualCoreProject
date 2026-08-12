@@ -668,7 +668,7 @@ const display_cfg_t g_display_cfg =
         {
             .input =
             {
-                #if (false)
+                #if (true)
                 .p_base              = (uint32_t *)&fb_foreground[0],
                 #else
                 .p_base              = NULL,

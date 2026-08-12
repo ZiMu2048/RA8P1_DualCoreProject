@@ -24,13 +24,6 @@ static uint8_t * volatile gp_camera_completed_frame;
 static volatile uint32_t g_camera_frame_sequence;
 
 /*
- *[@name] g_camera_vin_error_count
- *[@type] static volatile global variable
- *[@usage] 记录VIN错误事件累计次数，只能由vin_callback递增
- */
-static volatile uint32_t g_camera_vin_error_count;
-
-/*
  *[@name] camera_capture_open
  *[@type] function
  *[@usage] 清空采集状态、维护VIN缓冲区Cache并打开VIN和MIPI-CSI，只能在任务上下文调用
@@ -43,7 +36,6 @@ fsp_err_t camera_capture_open(void)
 
     gp_camera_completed_frame = NULL;
     g_camera_frame_sequence = 0U;
-    g_camera_vin_error_count = 0U;
 
 #if BSP_CFG_DCACHE_ENABLED
     SCB_CleanInvalidateDCache_by_Addr(
@@ -189,7 +181,6 @@ void vin_callback(capture_callback_args_t * p_args)
                 }
                 else
                 {
-                    g_camera_vin_error_count++;
                     __DMB();
                     (void) xEventGroupSetBitsFromISR(g_ai_app_event,
                                                      CAMERA_CAPTURE_ERROR,
@@ -202,7 +193,6 @@ void vin_callback(capture_callback_args_t * p_args)
 
         case VIN_EVENT_ERROR:
         {
-            g_camera_vin_error_count++;
             __DMB();
             (void) xEventGroupSetBitsFromISR(g_ai_app_event,
                                              CAMERA_CAPTURE_ERROR,

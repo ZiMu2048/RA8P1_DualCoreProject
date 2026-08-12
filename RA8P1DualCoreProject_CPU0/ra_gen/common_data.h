@@ -74,7 +74,7 @@ extern uint8_t vin_image_buffer_3[VIN_BYTES_PER_FRAME];
             void   d1_free(void * ptr);
             #endif
 #define GLCDC_CFG_LAYER_1_ENABLE (true)
-#define GLCDC_CFG_LAYER_2_ENABLE (false)
+#define GLCDC_CFG_LAYER_2_ENABLE (true)
 
 #define GLCDC_CFG_CLUT_ENABLE (false)
 
@@ -135,8 +135,8 @@ void glcdc_vsync_isr(display_callback_args_t *p_args);
             #else
             #define DISPLAY_BITS_PER_PIXEL_INPUT1 (1)
             #endif
-#define DISPLAY_HSIZE_INPUT1                 (1024)
-#define DISPLAY_VSIZE_INPUT1                 (600)
+#define DISPLAY_HSIZE_INPUT1                 (800)
+#define DISPLAY_VSIZE_INPUT1                 (480)
 #define DISPLAY_BUFFER_STRIDE_BYTES_INPUT1   (((DISPLAY_HSIZE_INPUT1 * DISPLAY_BITS_PER_PIXEL_INPUT1 + 0x1FF) >> 9) << 6)
 #define DISPLAY_BUFFER_STRIDE_PIXELS_INPUT1  ((DISPLAY_BUFFER_STRIDE_BYTES_INPUT1 * 8) / DISPLAY_BITS_PER_PIXEL_INPUT1)
 #if GLCDC_CFG_LAYER_2_ENABLE

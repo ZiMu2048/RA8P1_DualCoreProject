@@ -6,13 +6,6 @@
 #include "SEGGER_RTT/bsp_print.h"
 
 /*
- *[@name] g_camera_init_error
- *[@type] static volatile global variable
- *[@usage] 保存Camera Thread最近一次初始化或启动错误，供调试器观察
- */
-static volatile fsp_err_t g_camera_init_error = FSP_SUCCESS;
-
-/*
  *[@name] camera_thread_entry
  *[@type] thread entry function
  *[@usage] 初始化IIC与OV5640，等待显示初始化后启动VIN连续采集，并阻塞等待采集错误事件
@@ -22,18 +15,16 @@ static volatile fsp_err_t g_camera_init_error = FSP_SUCCESS;
 void camera_thread_entry(void * pvParameters)
 {
     EventBits_t events;
+    fsp_err_t err;
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
-    g_printf("\r\n[CAM] Camera Thread started.\r\n");
-    g_printf("[CAM] Opening IIC master.\r\n");
-
-    g_camera_init_error = i2c_control_init();
-    if(FSP_SUCCESS != g_camera_init_error)
+    err = i2c_control_init();
+    if(FSP_SUCCESS != err)
     {
         g_printf("[CAM][ERR] IIC initialization failed: %u\r\n",
-                 (unsigned int) g_camera_init_error);
-        APP_ERROR_TRAP(g_camera_init_error);
+                 (unsigned int) err);
+        APP_ERROR_TRAP(err);
 
         for(;;)
         {
@@ -42,14 +33,13 @@ void camera_thread_entry(void * pvParameters)
     }
 
     vTaskDelay(pdMS_TO_TICKS(10U));
-    g_printf("[CAM] Initializing OV5640.\r\n");
 
-    g_camera_init_error = camera_open();
-    if(FSP_SUCCESS != g_camera_init_error)
+    err = camera_open();
+    if(FSP_SUCCESS != err)
     {
         g_printf("[CAM][ERR] OV5640 initialization failed: %u\r\n",
-                 (unsigned int) g_camera_init_error);
-        APP_ERROR_TRAP(g_camera_init_error);
+                 (unsigned int) err);
+        APP_ERROR_TRAP(err);
 
         for(;;)
         {
@@ -58,7 +48,6 @@ void camera_thread_entry(void * pvParameters)
     }
 
     (void) xEventGroupSetBits(g_ai_app_event, HARDWARE_CAMERA_INIT_DONE);
-    g_printf("[CAM] OV5640 initialized; waiting for Display Thread.\r\n");
 
     events = xEventGroupWaitBits(g_ai_app_event,
                                  HARDWARE_DISPLAY_INIT_DONE,
@@ -70,12 +59,12 @@ void camera_thread_entry(void * pvParameters)
         APP_ERROR_TRAP(FSP_ERR_INTERNAL);
     }
 
-    g_camera_init_error = camera_capture_open();
-    if(FSP_SUCCESS != g_camera_init_error)
+    err = camera_capture_open();
+    if(FSP_SUCCESS != err)
     {
         g_printf("[CAM][ERR] VIN open failed: %u\r\n",
-                 (unsigned int) g_camera_init_error);
-        APP_ERROR_TRAP(g_camera_init_error);
+                 (unsigned int) err);
+        APP_ERROR_TRAP(err);
 
         for(;;)
         {
@@ -83,12 +72,12 @@ void camera_thread_entry(void * pvParameters)
         }
     }
 
-    g_camera_init_error = camera_capture_start();
-    if(FSP_SUCCESS != g_camera_init_error)
+    err = camera_capture_start();
+    if(FSP_SUCCESS != err)
     {
         g_printf("[CAM][ERR] Camera capture start failed: %u\r\n",
-                 (unsigned int) g_camera_init_error);
-        APP_ERROR_TRAP(g_camera_init_error);
+                 (unsigned int) err);
+        APP_ERROR_TRAP(err);
 
         for(;;)
         {
@@ -96,7 +85,7 @@ void camera_thread_entry(void * pvParameters)
         }
     }
 
-    g_printf("[CAM] Continuous capture started.\r\n");
+    g_printf("[CAM] Camera capture ready.\r\n");
 
     for(;;)
     {

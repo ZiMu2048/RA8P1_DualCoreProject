@@ -188,7 +188,6 @@ fsp_err_t camera_open (void)
 {
     fsp_err_t err = FSP_SUCCESS;
 
-    g_printf("[CAM][OV5640] Waiting for sensor power stabilization.\r\n");
     R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
 
     /* Change the I2C slave address to control camera sensor */
@@ -197,10 +196,8 @@ fsp_err_t camera_open (void)
 
     /* Reset using GPIO */
     camera_hw_reset();
-    g_printf("[CAM][OV5640] Hardware reset on P709 completed.\r\n");
 
     /* write array register initialize camera */
-    g_printf("[CAM][OV5640] Writing sensor configuration table.\r\n");
     err = camera_write_array(ov5640_mipi);
     APP_ERR_RET( FSP_SUCCESS != err, err, " ** camera_write_array FAILED ** \r\n");
 
@@ -218,10 +215,6 @@ fsp_err_t camera_open (void)
     /* Set the mipi virtual channel */
     err = camera_set_mipi_virtual_channel(DEFAULT_MIPI_CHANNEL);
     APP_ERR_RET( FSP_SUCCESS != err, err, " ** camera_set_mipi_virtual_channel FAILED ** \r\n");
-
-    g_printf("[CAM][OV5640] Configuration verified, PCLK=%u Hz, FPS=%u.\r\n",
-             (unsigned int) g_plck_hz,
-             (unsigned int) FPS_TARGET);
 
     return err;
 }

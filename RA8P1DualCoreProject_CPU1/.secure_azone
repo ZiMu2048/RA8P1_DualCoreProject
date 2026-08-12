@@ -127,6 +127,9 @@
             <slot name="P301.CPU0" secure="true"/>
             <slot name="P302.CPU0" secure="true"/>
         </peripheral>
+        <peripheral name="PORT4.CPU0" group="PORT">
+            <slot name="P406.CPU0" secure="true"/>
+        </peripheral>
         <peripheral name="PORT5.CPU0" group="PORT">
             <slot name="P503.CPU0" secure="true"/>
             <slot name="P504.CPU0" secure="true"/>
@@ -300,6 +303,7 @@
             <assign group="PORT" peripheral="PORT3.P300"/>
             <assign group="PORT" peripheral="PORT3.P301"/>
             <assign group="PORT" peripheral="PORT3.P302"/>
+            <assign group="PORT" peripheral="PORT4.P406"/>
             <assign group="PORT" peripheral="PORT5.P503"/>
             <assign group="PORT" peripheral="PORT5.P504"/>
             <assign group="PORT" peripheral="PORT5.P505"/>
