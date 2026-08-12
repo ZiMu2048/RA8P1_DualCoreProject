@@ -48,7 +48,7 @@ FSP_HEADER
 #define configTICK_RATE_HZ (1000)
 #endif
 #ifndef configMAX_PRIORITIES
-#define configMAX_PRIORITIES (5)
+#define configMAX_PRIORITIES (16)
 #endif
 #ifndef configMINIMAL_STACK_SIZE
 #define configMINIMAL_STACK_SIZE (128)
@@ -57,7 +57,7 @@ FSP_HEADER
 #define configMINIMAL_SECURE_STACK_SIZE (256U)  /* Unused in RA port. */
 #endif
 #ifndef configMAX_TASK_NAME_LEN
-#define configMAX_TASK_NAME_LEN (16)
+#define configMAX_TASK_NAME_LEN (20)
 #endif
 #ifndef configUSE_TRACE_FACILITY
 #define configUSE_TRACE_FACILITY (0)

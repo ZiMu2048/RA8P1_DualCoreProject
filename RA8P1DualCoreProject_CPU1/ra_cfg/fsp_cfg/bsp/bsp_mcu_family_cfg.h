@@ -104,7 +104,7 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* OSPI0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 17) /* OSPI1 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 18) /* SPI1 */ | \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 19) /* SPI0 */ | \
+            (((2 > 0) ? 0U : 1U) << 19) /* SPI0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 22) /* SCI9 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 23) /* SCI8 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 24) /* SCI7 */ | \
@@ -114,7 +114,7 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 28) /* SCI3 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 29) /* SCI2 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 30) /* SCI1 */ | \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* SCI0 */)
+            (((1 > 0) ? 0U : 1U) << 31) /* SCI0 */)
 #endif
 #ifndef BSP_TZ_CFG_PSARC
 #define BSP_TZ_CFG_PSARC (\
@@ -259,7 +259,7 @@
 /* Security attribution for registers for IRQ channels. */
 #ifndef BSP_TZ_CFG_ICUSARA
 #define BSP_TZ_CFG_ICUSARA (\
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 0U) /* External IRQ0 */ | \
+            (((2 > 0) ? 0U : 1U) << 0U) /* External IRQ0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 1U) /* External IRQ1 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 2U) /* External IRQ2 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 3U) /* External IRQ3 */ | \

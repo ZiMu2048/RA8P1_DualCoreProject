@@ -661,6 +661,9 @@ FSP Configuration
   Module "IPC (r_ipc)"
     Parameter Checking: Default (BSP)
     
+  Module "External IRQ (r_icu)"
+    Parameter Checking: Default (BSP)
+    
   FreeRTOS
     General: Custom FreeRTOSConfig.h: 
     General: Use Preemption: Enabled
@@ -672,7 +675,7 @@ FSP Configuration
     Hooks: Use Tick Hook: Disabled
     General: Cpu Clock Hz: SystemCoreClock
     General: Tick Rate Hz: 1000
-    General: Max Priorities: 5
+    General: Max Priorities: 16
     General: Minimal Stack Size: 128
     General: Max Task Name Len: 20
     Stats: Use Trace Facility: Disabled
@@ -938,11 +941,11 @@ FSP Configuration
       Extra Features: Output Disable: GTIOCA Disable Setting: Disable Prohibited
       Extra Features: Output Disable: GTIOCB Disable Setting: Disable Prohibited
       
-  Thread "IMU Aquire Thread"
-    Symbol: imu_aq_thread
-    Name: IMU Aquire Thread
+  Thread "Vehicle Thread"
+    Symbol: vehicle_thread
+    Name: Vehicle Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 7
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -997,11 +1000,11 @@ FSP Configuration
     Memory Allocation: Static
     Allocate Secure Context: Enable
     
-  Thread "Command Thread"
-    Symbol: command_thread
-    Name: Command Thread
+  Thread "Command RX Thread"
+    Symbol: command_rx_thread
+    Name: Command RX Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 6
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1033,11 +1036,11 @@ FSP Configuration
       SSL Negation Delay: 1 Clock
       Next Access Delay: 1 Clock
       
-  Thread "Response Thread"
-    Symbol: response_thread
-    Name: Response Thread
+  Thread "Video TX Thread"
+    Symbol: video_tx_thread
+    Name: Video TX Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 2
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1069,11 +1072,21 @@ FSP Configuration
       SSL Negation Delay: 1 Clock
       Next Access Delay: 1 Clock
       
-  Thread "WIFI Thread"
-    Symbol: wifi_thread
-    Name: WIFI Thread
+    Instance "g_external_irq0 External IRQ (r_icu)"
+      Name: g_external_irq0
+      Channel: 0
+      Trigger: Rising
+      Digital Filtering: Disabled
+      Filter Source: PCLK filter
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Callback: NULL
+      Pin Interrupt Priority: Priority 12
+      
+  Thread "WIFI Upload Thread"
+    Symbol: wifi_upload_thread
+    Name: WIFI Upload Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 4
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1105,17 +1118,33 @@ FSP Configuration
       Interrupts: Transmit End Interrupt Priority: Priority 12
       Interrupts: Error Interrupt Priority: Priority 12
       
+    Instance "g_external_irq1 External IRQ (r_icu)"
+      Name: g_external_irq1
+      Channel: 0
+      Trigger: Rising
+      Digital Filtering: Disabled
+      Filter Source: PCLK filter
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Callback: NULL
+      Pin Interrupt Priority: Priority 12
+      
   Thread "IPC Thread"
     Symbol: ipc_thread
     Name: IPC Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 5
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
     
     Instance "g_ipc0 IPC (r_ipc)"
       Name: g_ipc0
+      Channel: 0
+      Callback: NULL
+      Interrupt Priority: Disabled
+      
+    Instance "g_ipc1 IPC (r_ipc)"
+      Name: g_ipc1
       Channel: 0
       Callback: NULL
       Interrupt Priority: Disabled

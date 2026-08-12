@@ -32,7 +32,7 @@ void display_thread_create(void) {
                     #endif
 			display_thread_func, (const char*) "Display Thread", 0x1000 / 4, // In words, not bytes
 			(void*) &display_thread_parameters, //pvParameters
-			3,
+			6,
 #if 1
 			(StackType_t*) &display_thread_stack,
 			(StaticTask_t*) &display_thread_memory

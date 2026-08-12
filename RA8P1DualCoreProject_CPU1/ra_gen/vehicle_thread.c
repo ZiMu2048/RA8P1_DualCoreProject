@@ -1,17 +1,17 @@
 /* generated thread source file - do not edit */
-#include <imu_aq_thread.h>
+#include "vehicle_thread.h"
 
 #if 1
-static StaticTask_t imu_thread_memory;
+static StaticTask_t vehicle_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t imu_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t vehicle_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t imu_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.imu_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t vehicle_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.vehicle_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
-TaskHandle_t imu_thread;
-void imu_thread_create(void);
-static void imu_thread_func(void *pvParameters);
+TaskHandle_t vehicle_thread;
+void vehicle_thread_create(void);
+static void vehicle_thread_func(void *pvParameters);
 void rtos_startup_err_callback(void *p_instance, void *p_data);
 void rtos_startup_common_init(void);
 dtc_instance_ctrl_t g_transfer3_ctrl;
@@ -231,42 +231,43 @@ const i2c_master_instance_t g_i2c_master0 = { .p_ctrl = &g_i2c_master0_ctrl,
 		.p_cfg = &g_i2c_master0_cfg, .p_api = &g_i2c_master_on_iic };
 extern uint32_t g_fsp_common_thread_count;
 
-const rm_freertos_port_parameters_t imu_thread_parameters = { .p_context =
+const rm_freertos_port_parameters_t vehicle_thread_parameters = { .p_context =
 		(void*) NULL, };
 
-void imu_thread_create(void) {
+void vehicle_thread_create(void) {
 	/* Increment count so we will know the number of threads created in the RA Configuration editor. */
 	g_fsp_common_thread_count++;
 
 	/* Initialize each kernel object. */
 
 #if 1
-	imu_thread = xTaskCreateStatic(
+	vehicle_thread = xTaskCreateStatic(
 #else
-                    BaseType_t imu_thread_create_err = xTaskCreate(
+                    BaseType_t vehicle_thread_create_err = xTaskCreate(
                     #endif
-			imu_thread_func, (const char*) "IMU Thread", 1024 / 4, // In words, not bytes
-			(void*) &imu_thread_parameters, //pvParameters
-			1,
+			vehicle_thread_func, (const char*) "Vehicle Thread", 1024 / 4, // In words, not bytes
+			(void*) &vehicle_thread_parameters, //pvParameters
+			7,
 #if 1
-			(StackType_t*) &imu_thread_stack, (StaticTask_t*) &imu_thread_memory
+			(StackType_t*) &vehicle_thread_stack,
+			(StaticTask_t*) &vehicle_thread_memory
 #else
-                        & imu_thread
+                        & vehicle_thread
                         #endif
 			);
 
 #if 1
-	if (NULL == imu_thread) {
-		rtos_startup_err_callback(imu_thread, 0);
+	if (NULL == vehicle_thread) {
+		rtos_startup_err_callback(vehicle_thread, 0);
 	}
 #else
-                    if (pdPASS != imu_thread_create_err)
+                    if (pdPASS != vehicle_thread_create_err)
                     {
-                        rtos_startup_err_callback(imu_thread, 0);
+                        rtos_startup_err_callback(vehicle_thread, 0);
                     }
                     #endif
 }
-static void imu_thread_func(void *pvParameters) {
+static void vehicle_thread_func(void *pvParameters) {
 	/* Initialize common components */
 	rtos_startup_common_init();
 
@@ -285,5 +286,5 @@ static void imu_thread_func(void *pvParameters) {
                     #endif
 
 	/* Enter user code for this thread. Pass task handle. */
-	imu_thread_entry(pvParameters);
+	vehicle_thread_entry(pvParameters);
 }

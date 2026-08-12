@@ -846,7 +846,7 @@
       <property id="_symbol" value="display_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Display Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="0x1000"/>
-      <property id="rtos.awsfreertos.thread.priority" value="3"/>
+      <property id="rtos.awsfreertos.thread.priority" value="6"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -859,7 +859,7 @@
       <property id="_symbol" value="camera_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Camera Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="0x1800"/>
-      <property id="rtos.awsfreertos.thread.priority" value="3"/>
+      <property id="rtos.awsfreertos.thread.priority" value="4"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -877,7 +877,7 @@
       <property id="_symbol" value="ai_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="AI Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="0x2000"/>
-      <property id="rtos.awsfreertos.thread.priority" value="1"/>
+      <property id="rtos.awsfreertos.thread.priority" value="3"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -902,12 +902,21 @@
       <property id="_symbol" value="ipc_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="IPC Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="1024"/>
-      <property id="rtos.awsfreertos.thread.priority" value="1"/>
+      <property id="rtos.awsfreertos.thread.priority" value="7"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
       <stack module="module.driver.ipc_on_ipc.860336578"/>
       <stack module="module.driver.ipc_on_ipc.1670802994"/>
+    </context>
+    <context id="rtos.awsfreertos.thread.1822658033">
+      <property id="_symbol" value="encode_thread"/>
+      <property id="rtos.awsfreertos.thread.name" value="Encode Thread"/>
+      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.priority" value="2"/>
+      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
+      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
+      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
     </context>
     <config id="config.driver.ipc">
       <property id="config.driver.ipc.param_checking_enable" value="config.driver.ipc.param_checking_enable.bsp"/>

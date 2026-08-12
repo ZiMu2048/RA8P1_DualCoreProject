@@ -757,7 +757,7 @@ FSP Configuration
     Symbol: display_thread
     Name: Display Thread
     Stack size (bytes): 0x1000
-    Priority: 3
+    Priority: 6
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -944,7 +944,7 @@ FSP Configuration
     Symbol: camera_thread
     Name: Camera Thread
     Stack size (bytes): 0x1800
-    Priority: 3
+    Priority: 4
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1135,7 +1135,7 @@ FSP Configuration
     Symbol: ai_thread
     Name: AI Thread
     Stack size (bytes): 0x2000
-    Priority: 1
+    Priority: 3
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1162,7 +1162,7 @@ FSP Configuration
     Symbol: ipc_thread
     Name: IPC Thread
     Stack size (bytes): 1024
-    Priority: 1
+    Priority: 7
     Thread Context: NULL
     Memory Allocation: Static
     Allocate Secure Context: Enable
@@ -1179,6 +1179,15 @@ FSP Configuration
       Callback: NULL
       Interrupt Priority: Disabled
       
+  Thread "Encode Thread"
+    Symbol: encode_thread
+    Name: Encode Thread
+    Stack size (bytes): 1024
+    Priority: 2
+    Thread Context: NULL
+    Memory Allocation: Static
+    Allocate Secure Context: Enable
+    
   Object "g_ai_app_event Event Group"
     Symbol: g_ai_app_event
     Memory Allocation: Static

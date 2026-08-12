@@ -1,15 +1,15 @@
 /* generated thread header file - do not edit */
-#ifndef IMU_AQ_THREAD_H_
-#define IMU_AQ_THREAD_H_
+#ifndef VEHICLE_THREAD_H_
+#define VEHICLE_THREAD_H_
 #include "bsp_api.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
 #include "hal_data.h"
 #ifdef __cplusplus
-                extern "C" void imu_thread_entry(void * pvParameters);
+                extern "C" void vehicle_thread_entry(void * pvParameters);
                 #else
-extern void imu_thread_entry(void *pvParameters);
+extern void vehicle_thread_entry(void *pvParameters);
 #endif
 #include "r_dtc.h"
 #include "r_transfer_api.h"
@@ -39,4 +39,4 @@ extern const i2c_master_cfg_t g_i2c_master0_cfg;
 void imu_i2c0_callback(i2c_master_callback_args_t *p_args);
 #endif
 FSP_FOOTER
-#endif /* IMU_AQ_THREAD_H_ */
+#endif /* VEHICLE_THREAD_H_ */

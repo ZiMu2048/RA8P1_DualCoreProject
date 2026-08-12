@@ -3,8 +3,18 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
-extern void imu_thread_create(void);
-extern TaskHandle_t imu_thread;
+extern void vehicle_thread_create(void);
+extern TaskHandle_t vehicle_thread;
+extern void motor_ctrl_thread_create(void);
+extern TaskHandle_t motor_ctrl_thread;
+extern void command_rx_thread_create(void);
+extern TaskHandle_t command_rx_thread;
+extern void video_tx_thread_create(void);
+extern TaskHandle_t video_tx_thread;
+extern void wifi_upload_thread_create(void);
+extern TaskHandle_t wifi_upload_thread;
+extern void ipc_thread_create(void);
+extern TaskHandle_t ipc_thread;
 uint32_t g_fsp_common_thread_count;
 bool g_fsp_common_initialized;
 SemaphoreHandle_t g_fsp_common_initialized_semaphore;
@@ -94,7 +104,12 @@ int main(void) {
 	}
 
 	/* Init RTOS tasks. */
-	imu_thread_create();
+	vehicle_thread_create();
+	motor_ctrl_thread_create();
+	command_rx_thread_create();
+	video_tx_thread_create();
+	wifi_upload_thread_create();
+	ipc_thread_create();
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
