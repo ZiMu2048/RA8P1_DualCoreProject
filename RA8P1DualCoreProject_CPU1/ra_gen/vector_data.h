@@ -6,7 +6,7 @@
         #endif
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (13)
+#define VECTOR_DATA_IRQ_COUNT    (14)
 #endif
 /* ISR prototypes */
 void iic_master_rxi_isr(void);
@@ -22,6 +22,7 @@ void sci_b_uart_rxi_isr(void);
 void sci_b_uart_txi_isr(void);
 void sci_b_uart_tei_isr(void);
 void sci_b_uart_eri_isr(void);
+void ipc_isr(void);
 
 /* Vector table allocations */
 #define VECTOR_NUMBER_IIC0_RXI ((IRQn_Type) 0) /* IIC0 RXI (Receive data full) */
@@ -50,8 +51,10 @@ void sci_b_uart_eri_isr(void);
 #define SCI0_TEI_IRQn          ((IRQn_Type) 11) /* SCI0 TEI (Transmit end) */
 #define VECTOR_NUMBER_SCI0_ERI ((IRQn_Type) 12) /* SCI0 ERI (Receive error) */
 #define SCI0_ERI_IRQn          ((IRQn_Type) 12) /* SCI0 ERI (Receive error) */
+#define VECTOR_NUMBER_IPC_IRQ0 ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+#define IPC_IRQ0_IRQn          ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
 /* The number of entries required for the ICU vector table. */
-#define BSP_ICU_VECTOR_NUM_ENTRIES (13)
+#define BSP_ICU_VECTOR_NUM_ENTRIES (14)
 
 #ifdef __cplusplus
         }

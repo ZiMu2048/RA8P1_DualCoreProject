@@ -5,8 +5,6 @@
 #include "semphr.h"
 extern void vehicle_thread_create(void);
 extern TaskHandle_t vehicle_thread;
-extern void motor_ctrl_thread_create(void);
-extern TaskHandle_t motor_ctrl_thread;
 extern void command_rx_thread_create(void);
 extern TaskHandle_t command_rx_thread;
 extern void video_tx_thread_create(void);
@@ -105,7 +103,6 @@ int main(void) {
 
 	/* Init RTOS tasks. */
 	vehicle_thread_create();
-	motor_ctrl_thread_create();
 	command_rx_thread_create();
 	video_tx_thread_create();
 	wifi_upload_thread_create();

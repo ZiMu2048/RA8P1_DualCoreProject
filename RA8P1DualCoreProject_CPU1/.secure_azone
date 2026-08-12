@@ -272,10 +272,10 @@
         <peripheral name="ICU_EXT_IRQ.CPU1">
             <slot name="ICU_EXT_IRQ0.CPU1" secure="true"/>
         </peripheral>
+        <peripheral name="IIC0.CPU1" group="IIC" security="s"/>
         <peripheral name="GPT6.CPU1" group="GPT" security="s"/>
         <peripheral name="GPT7.CPU1" group="GPT" security="s"/>
         <peripheral name="GPT8.CPU1" group="GPT" security="s"/>
-        <peripheral name="IIC0.CPU1" group="IIC" security="s"/>
         <peripheral name="ICU.CPU1">
             <slot name="IRQ0.CPU1" secure="true"/>
             <slot name="IRQ1.CPU1" secure="true"/>
@@ -290,6 +290,7 @@
             <slot name="IRQ10.CPU1" secure="true"/>
             <slot name="IRQ11.CPU1" secure="true"/>
             <slot name="IRQ12.CPU1" secure="true"/>
+            <slot name="IRQ13.CPU1" secure="true"/>
         </peripheral>
     </partition>
     <zones>

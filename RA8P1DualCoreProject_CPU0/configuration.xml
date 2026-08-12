@@ -824,8 +824,8 @@
     <module id="module.driver.ipc_on_ipc.860336578">
       <property id="module.driver.ipc.name" value="g_ipc0"/>
       <property id="module.driver.ipc.channel" value="enum.driver.ipc.channel.0"/>
-      <property id="module.driver.ipc.callback" value="NULL"/>
-      <property id="module.driver.ipc.ipl" value="_disabled"/>
+      <property id="module.driver.ipc.callback" value="g_ipc0_callback"/>
+      <property id="module.driver.ipc.ipl" value="board.icu.common.irq.priority5"/>
     </module>
     <module id="module.driver.ipc_on_ipc.1670802994">
       <property id="module.driver.ipc.name" value="g_ipc1"/>

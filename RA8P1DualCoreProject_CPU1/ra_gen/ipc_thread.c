@@ -17,13 +17,13 @@ void rtos_startup_common_init(void);
 ipc_instance_ctrl_t g_ipc1_ctrl;
 
 /** IPC configuration */
-const ipc_cfg_t g_ipc1_cfg = { .channel = 0, .p_callback = NULL,
+const ipc_cfg_t g_ipc1_cfg = { .channel = 0, .p_callback = g_ipc1_callback,
 #if defined(NULL)
                 .p_context = NULL,
 #else
 		.p_context = (void*) &NULL,
 #endif
-		.ipl = (BSP_IRQ_DISABLED),
+		.ipl = (5),
 #if defined(VECTOR_NUMBER_IPC_IRQ0)
                 .irq = VECTOR_NUMBER_IPC_IRQ0,
 #else

@@ -633,11 +633,6 @@ FSP Configuration
     
   Module "FreeRTOS Port (rm_freertos_port)"
   Module "FreeRTOS Heap 4"
-  Module "Timer, General PWM (r_gpt)"
-    Parameter Checking: Default (BSP)
-    Pin Output Support: Enabled
-    Write Protect Enable: Disabled
-    
   Module "I2C Master (r_iic_master)"
     Parameter Checking: Default (BSP)
     DTC on Transmission and Reception: Enabled
@@ -663,6 +658,11 @@ FSP Configuration
     
   Module "External IRQ (r_icu)"
     Parameter Checking: Default (BSP)
+    
+  Module "Timer, General PWM (r_gpt)"
+    Parameter Checking: Default (BSP)
+    Pin Output Support: Enabled
+    Write Protect Enable: Disabled
     
   FreeRTOS
     General: Custom FreeRTOSConfig.h: 
@@ -743,6 +743,56 @@ FSP Configuration
       
     Instance "FreeRTOS Port (rm_freertos_port)"
     Instance "FreeRTOS Heap 4"
+  Thread "Vehicle Thread"
+    Symbol: vehicle_thread
+    Name: Vehicle Thread
+    Stack size (bytes): 1024
+    Priority: 7
+    Thread Context: NULL
+    Memory Allocation: Static
+    Allocate Secure Context: Enable
+    
+    Instance "g_i2c_master0 I2C Master (r_iic_master)"
+      Name: g_i2c_master0
+      Channel: 0
+      Rate: Standard
+      Custom Rate (bps): 0
+      Rise Time (ns): 120
+      Fall Time (ns): 120
+      Duty Cycle (%): 50
+      Slave Address: 0x00
+      Address Mode: 7-Bit
+      Timeout Mode: Short Mode
+      Timeout during SCL Low: Enabled
+      Callback: imu_i2c0_callback
+      Interrupt Priority Level: Priority 12
+      
+      Instance "g_transfer2 Transfer (r_dtc) IIC0 TXI (Transmit data empty)"
+        Name: g_transfer2
+        Mode: Normal
+        Transfer Size: 1 Byte
+        Destination Address Mode: Fixed
+        Source Address Mode: Incremented
+        Repeat Area (Unused in Normal Mode): Source
+        Interrupt Frequency: After all transfers have completed
+        Number of Transfers: 0
+        Number of Blocks (Valid only in Block Mode): 0
+        Number of Transfer Descriptors: 1
+        Activation Source: IIC0 TXI (Transmit data empty)
+        
+      Instance "g_transfer3 Transfer (r_dtc) IIC0 RXI (Receive data full)"
+        Name: g_transfer3
+        Mode: Normal
+        Transfer Size: 1 Byte
+        Destination Address Mode: Incremented
+        Source Address Mode: Fixed
+        Repeat Area (Unused in Normal Mode): Destination
+        Interrupt Frequency: After all transfers have completed
+        Number of Transfers: 0
+        Number of Blocks (Valid only in Block Mode): 0
+        Number of Transfer Descriptors: 1
+        Activation Source: IIC0 RXI (Receive data full)
+        
     Instance "g_left_wheel Timer, General PWM (r_gpt)"
       General: Name: g_left_wheel
       General: Channel: 6
@@ -941,65 +991,6 @@ FSP Configuration
       Extra Features: Output Disable: GTIOCA Disable Setting: Disable Prohibited
       Extra Features: Output Disable: GTIOCB Disable Setting: Disable Prohibited
       
-  Thread "Vehicle Thread"
-    Symbol: vehicle_thread
-    Name: Vehicle Thread
-    Stack size (bytes): 1024
-    Priority: 7
-    Thread Context: NULL
-    Memory Allocation: Static
-    Allocate Secure Context: Enable
-    
-    Instance "g_i2c_master0 I2C Master (r_iic_master)"
-      Name: g_i2c_master0
-      Channel: 0
-      Rate: Standard
-      Custom Rate (bps): 0
-      Rise Time (ns): 120
-      Fall Time (ns): 120
-      Duty Cycle (%): 50
-      Slave Address: 0x00
-      Address Mode: 7-Bit
-      Timeout Mode: Short Mode
-      Timeout during SCL Low: Enabled
-      Callback: imu_i2c0_callback
-      Interrupt Priority Level: Priority 12
-      
-      Instance "g_transfer2 Transfer (r_dtc) IIC0 TXI (Transmit data empty)"
-        Name: g_transfer2
-        Mode: Normal
-        Transfer Size: 1 Byte
-        Destination Address Mode: Fixed
-        Source Address Mode: Incremented
-        Repeat Area (Unused in Normal Mode): Source
-        Interrupt Frequency: After all transfers have completed
-        Number of Transfers: 0
-        Number of Blocks (Valid only in Block Mode): 0
-        Number of Transfer Descriptors: 1
-        Activation Source: IIC0 TXI (Transmit data empty)
-        
-      Instance "g_transfer3 Transfer (r_dtc) IIC0 RXI (Receive data full)"
-        Name: g_transfer3
-        Mode: Normal
-        Transfer Size: 1 Byte
-        Destination Address Mode: Incremented
-        Source Address Mode: Fixed
-        Repeat Area (Unused in Normal Mode): Destination
-        Interrupt Frequency: After all transfers have completed
-        Number of Transfers: 0
-        Number of Blocks (Valid only in Block Mode): 0
-        Number of Transfer Descriptors: 1
-        Activation Source: IIC0 RXI (Receive data full)
-        
-  Thread "Motor Ctrl Thread"
-    Symbol: motor_ctrl_thread
-    Name: Motor Ctrl Thread
-    Stack size (bytes): 1024
-    Priority: 1
-    Thread Context: NULL
-    Memory Allocation: Static
-    Allocate Secure Context: Enable
-    
   Thread "Command RX Thread"
     Symbol: command_rx_thread
     Name: Command RX Thread
@@ -1146,6 +1137,6 @@ FSP Configuration
     Instance "g_ipc1 IPC (r_ipc)"
       Name: g_ipc1
       Channel: 0
-      Callback: NULL
-      Interrupt Priority: Disabled
+      Callback: g_ipc1_callback
+      Interrupt Priority: Priority 5
       

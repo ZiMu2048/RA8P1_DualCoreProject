@@ -1170,8 +1170,8 @@ FSP Configuration
     Instance "g_ipc0 IPC (r_ipc)"
       Name: g_ipc0
       Channel: 0
-      Callback: NULL
-      Interrupt Priority: Disabled
+      Callback: g_ipc0_callback
+      Interrupt Priority: Priority 5
       
     Instance "g_ipc1 IPC (r_ipc)"
       Name: g_ipc1
