@@ -6,7 +6,7 @@
         #endif
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (14)
+#define VECTOR_DATA_IRQ_COUNT    (15)
 #endif
 /* ISR prototypes */
 void iic_master_rxi_isr(void);
@@ -41,20 +41,22 @@ void ipc_isr(void);
 #define SPI0_TEI_IRQn          ((IRQn_Type) 6) /* SPI0 TEI (Transmission complete event) */
 #define VECTOR_NUMBER_SPI0_ERI ((IRQn_Type) 7) /* SPI0 ERI (Error) */
 #define SPI0_ERI_IRQn          ((IRQn_Type) 7) /* SPI0 ERI (Error) */
-#define VECTOR_NUMBER_ICU_IRQ0 ((IRQn_Type) 8) /* ICU IRQ0 (External pin interrupt 0) */
-#define ICU_IRQ0_IRQn          ((IRQn_Type) 8) /* ICU IRQ0 (External pin interrupt 0) */
-#define VECTOR_NUMBER_SCI0_RXI ((IRQn_Type) 9) /* SCI0 RXI (Receive data full) */
-#define SCI0_RXI_IRQn          ((IRQn_Type) 9) /* SCI0 RXI (Receive data full) */
-#define VECTOR_NUMBER_SCI0_TXI ((IRQn_Type) 10) /* SCI0 TXI (Transmit data empty) */
-#define SCI0_TXI_IRQn          ((IRQn_Type) 10) /* SCI0 TXI (Transmit data empty) */
-#define VECTOR_NUMBER_SCI0_TEI ((IRQn_Type) 11) /* SCI0 TEI (Transmit end) */
-#define SCI0_TEI_IRQn          ((IRQn_Type) 11) /* SCI0 TEI (Transmit end) */
-#define VECTOR_NUMBER_SCI0_ERI ((IRQn_Type) 12) /* SCI0 ERI (Receive error) */
-#define SCI0_ERI_IRQn          ((IRQn_Type) 12) /* SCI0 ERI (Receive error) */
-#define VECTOR_NUMBER_IPC_IRQ0 ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
-#define IPC_IRQ0_IRQn          ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+#define VECTOR_NUMBER_ICU_IRQ19 ((IRQn_Type) 8) /* ICU IRQ19 (External pin interrupt 19) */
+#define ICU_IRQ19_IRQn          ((IRQn_Type) 8) /* ICU IRQ19 (External pin interrupt 19) */
+#define VECTOR_NUMBER_ICU_IRQ0 ((IRQn_Type) 9) /* ICU IRQ0 (External pin interrupt 0) */
+#define ICU_IRQ0_IRQn          ((IRQn_Type) 9) /* ICU IRQ0 (External pin interrupt 0) */
+#define VECTOR_NUMBER_SCI0_RXI ((IRQn_Type) 10) /* SCI0 RXI (Receive data full) */
+#define SCI0_RXI_IRQn          ((IRQn_Type) 10) /* SCI0 RXI (Receive data full) */
+#define VECTOR_NUMBER_SCI0_TXI ((IRQn_Type) 11) /* SCI0 TXI (Transmit data empty) */
+#define SCI0_TXI_IRQn          ((IRQn_Type) 11) /* SCI0 TXI (Transmit data empty) */
+#define VECTOR_NUMBER_SCI0_TEI ((IRQn_Type) 12) /* SCI0 TEI (Transmit end) */
+#define SCI0_TEI_IRQn          ((IRQn_Type) 12) /* SCI0 TEI (Transmit end) */
+#define VECTOR_NUMBER_SCI0_ERI ((IRQn_Type) 13) /* SCI0 ERI (Receive error) */
+#define SCI0_ERI_IRQn          ((IRQn_Type) 13) /* SCI0 ERI (Receive error) */
+#define VECTOR_NUMBER_IPC_IRQ0 ((IRQn_Type) 14) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+#define IPC_IRQ0_IRQn          ((IRQn_Type) 14) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
 /* The number of entries required for the ICU vector table. */
-#define BSP_ICU_VECTOR_NUM_ENTRIES (14)
+#define BSP_ICU_VECTOR_NUM_ENTRIES (15)
 
 #ifdef __cplusplus
         }

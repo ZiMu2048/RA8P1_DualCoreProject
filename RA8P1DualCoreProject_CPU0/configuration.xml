@@ -918,6 +918,15 @@
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
     </context>
+    <context id="rtos.awsfreertos.thread.1381046345">
+      <property id="_symbol" value="nRF27L01"/>
+      <property id="rtos.awsfreertos.thread.name" value="nRF27L01 Thread"/>
+      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.priority" value="1"/>
+      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
+      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
+      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
+    </context>
     <config id="config.driver.ipc">
       <property id="config.driver.ipc.param_checking_enable" value="config.driver.ipc.param_checking_enable.bsp"/>
     </config>

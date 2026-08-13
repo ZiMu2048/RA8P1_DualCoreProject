@@ -32,8 +32,8 @@ extern const ipc_instance_t g_ipc0;
 extern ipc_instance_ctrl_t g_ipc0_ctrl;
 extern const ipc_cfg_t g_ipc0_cfg;
 
-#ifndef NULL
-void NULL(ipc_callback_args_t *p_args);
+#ifndef g_ipc0_callback
+void g_ipc0_callback(ipc_callback_args_t *p_args);
 #endif
 FSP_FOOTER
 #endif /* IPC_THREAD_H_ */

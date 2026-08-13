@@ -1027,6 +1027,16 @@ FSP Configuration
       SSL Negation Delay: 1 Clock
       Next Access Delay: 1 Clock
       
+    Instance "g_external_irq19 External IRQ (r_icu)"
+      Name: g_external_irq19
+      Channel: 19
+      Trigger: Rising
+      Digital Filtering: Disabled
+      Filter Source: PCLK filter
+      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
+      Callback: NULL
+      Pin Interrupt Priority: Priority 12
+      
   Thread "Video TX Thread"
     Symbol: video_tx_thread
     Name: Video TX Thread
@@ -1108,16 +1118,6 @@ FSP Configuration
       Interrupts: Transmit Data Empty Interrupt Priority: Priority 12
       Interrupts: Transmit End Interrupt Priority: Priority 12
       Interrupts: Error Interrupt Priority: Priority 12
-      
-    Instance "g_external_irq1 External IRQ (r_icu)"
-      Name: g_external_irq1
-      Channel: 0
-      Trigger: Rising
-      Digital Filtering: Disabled
-      Filter Source: PCLK filter
-      Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
-      Callback: NULL
-      Pin Interrupt Priority: Priority 12
       
   Thread "IPC Thread"
     Symbol: ipc_thread

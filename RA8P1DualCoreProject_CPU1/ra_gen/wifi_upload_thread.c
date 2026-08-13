@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t wifi_upload_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t wifi_upload_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t wifi_upload_thread_stack[6144] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t wifi_upload_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.wifi_upload_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t wifi_upload_thread_stack[6144] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.wifi_upload_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t wifi_upload_thread;
@@ -42,7 +42,8 @@ const sci_b_uart_extended_cfg_t g_uart0_cfg_extend = { .clock =
 /** UART interface configuration */
 const uart_cfg_t g_uart0_cfg = { .channel = 0, .data_bits = UART_DATA_BITS_8,
 		.parity = UART_PARITY_OFF, .stop_bits = UART_STOP_BITS_1, .p_callback =
-				NULL, .p_context = NULL, .p_extend = &g_uart0_cfg_extend,
+				UART0_CallBack, .p_context = NULL, .p_extend =
+				&g_uart0_cfg_extend,
 #define RA_NOT_DEFINED (1)
 #if (RA_NOT_DEFINED == RA_NOT_DEFINED)
 		.p_transfer_tx = NULL,
@@ -98,7 +99,7 @@ void wifi_upload_thread_create(void) {
                     BaseType_t wifi_upload_thread_create_err = xTaskCreate(
                     #endif
 			wifi_upload_thread_func, (const char*) "WIFI Upload Thread",
-			1024 / 4, // In words, not bytes
+			6144 / 4, // In words, not bytes
 			(void*) &wifi_upload_thread_parameters, //pvParameters
 			4,
 #if 1

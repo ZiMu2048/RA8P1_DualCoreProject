@@ -1,11 +1,119 @@
 #include "ipc_thread.h"
-/* IPC Thread entry function */
-/* pvParameters contains TaskHandle_t */
-void ipc_thread_entry(void *pvParameters) {
-	FSP_PARAMETER_NOT_USED(pvParameters);
+#include "IPC/shared_jpeg_cpu1.h"
+#include "WifiUpload/wifi_upload_mailbox.h"
+#include "SEGGER_RTT/bsp_print.h"
 
-	/* TODO: add your own code here */
-	while (1) {
-		vTaskDelay(1);
-	}
+extern TaskHandle_t ipc_thread;
+
+/*
+ *[@name] g_ipc1_callback
+ *[@type] IPC interrupt callback
+ *[@usage] 保存CPU0的DATA_READY门铃并使用任务通知唤醒CPU1 IPC Thread
+ *[@argument] p_args FSP提供的IPC通道、消息、事件和用户上下文
+ *[@return] none
+ */
+void g_ipc1_callback(ipc_callback_args_t * p_args)
+{
+    BaseType_t higher_priority_task_woken = pdFALSE;
+
+    if((NULL != p_args) &&
+       (0U != ((uint32_t) p_args->event & (uint32_t) IPC_EVENT_MESSAGE_RECEIVED)))
+    {
+        shared_jpeg_cpu1_on_ipc_message_isr(p_args->message);
+        vTaskNotifyGiveFromISR(ipc_thread, &higher_priority_task_woken);
+        portYIELD_FROM_ISR(higher_priority_task_woken);
+    }
+}
+
+/*
+ *[@name] ipc_thread_entry
+ *[@type] thread entry function
+ *[@usage] 初始化CPU1共享JPEG消费者，校验JPEG边界与CRC并通过IPC返回处理结果
+ *[@argument] pvParameters FSP传入的线程参数，当前未使用
+ *[@return] none
+ */
+void ipc_thread_entry(void * pvParameters)
+{
+    fsp_err_t err;
+
+    FSP_PARAMETER_NOT_USED(pvParameters);
+
+    if(!wifi_upload_mailbox_init())
+    {
+        g_printf("[SHM1][FATAL] Wi-Fi upload queue init failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
+    err = shared_jpeg_cpu1_init();
+    if(FSP_SUCCESS != err)
+    {
+        g_printf("[SHM1][FATAL] Init failed: %u.\r\n", (unsigned int) err);
+        vTaskSuspend(NULL);
+    }
+
+    g_printf("[SHM1] CPU1 ready: base=0x%08X capacity=%u.\r\n",
+             (unsigned int) SHARED_JPEG_BASE_ADDRESS,
+             (unsigned int) SHARED_JPEG_PAYLOAD_CAPACITY);
+
+    for(;;)
+    {
+        shared_jpeg_cpu1_report_t report;
+        shared_jpeg_cpu1_result_t const result =
+            shared_jpeg_cpu1_process(&report);
+
+        if(report.upload_ready)
+        {
+            wifi_upload_job_t const job =
+            {
+                .p_jpeg_data = report.p_payload,
+                .jpeg_length = report.payload_length,
+                .frame_sequence = report.frame_sequence,
+                .jpeg_crc32 = report.actual_crc32,
+                .width = 240U,
+                .height = 240U,
+                .confidence_milli = report.confidence_milli
+            };
+
+            if(!wifi_upload_mailbox_submit(&job))
+            {
+                shared_jpeg_cpu1_result_t const completion_result =
+                    shared_jpeg_cpu1_complete_upload(
+                        report.frame_sequence,
+                        false,
+                        SHARED_JPEG_ERROR_UPLOAD_QUEUE);
+
+                g_printf("[SHM1][ERR] Wi-Fi queue busy frame=%u.\r\n",
+                         (unsigned int) report.frame_sequence);
+
+                if(SHARED_JPEG_CPU1_IPC_ERROR == completion_result)
+                {
+                    g_printf("[SHM1][WARN] Upload error acknowledgement retry pending.\r\n");
+                }
+            }
+        }
+        else if(report.completed)
+        {
+            if(!report.succeeded)
+            {
+                g_printf("[SHM1][ERR] JPEG rejected frame=%u error=%u expected=0x%08X actual=0x%08X.\r\n",
+                         (unsigned int) report.frame_sequence,
+                         (unsigned int) report.error_code,
+                         (unsigned int) report.expected_crc32,
+                         (unsigned int) report.actual_crc32);
+            }
+
+            if(SHARED_JPEG_CPU1_IPC_ERROR == result)
+            {
+                g_printf("[SHM1][WARN] Result acknowledgement retry pending.\r\n");
+            }
+        }
+        else if((SHARED_JPEG_CPU1_SUCCESS != result) &&
+                (SHARED_JPEG_CPU1_NO_DATA != result))
+        {
+            g_printf("[SHM1][ERR] Process failed: %u.\r\n",
+                     (unsigned int) result);
+        }
+
+        (void) ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
+    }
 }

@@ -6,7 +6,7 @@
         #endif
 /* Number of interrupts allocated */
 #ifndef VECTOR_DATA_IRQ_COUNT
-#define VECTOR_DATA_IRQ_COUNT    (13)
+#define VECTOR_DATA_IRQ_COUNT    (14)
 #endif
 /* ISR prototypes */
 void glcdc_line_detect_isr(void);
@@ -22,6 +22,7 @@ void mipi_csi_rx_isr(void);
 void mipi_csi_dl_isr(void);
 void mipi_csi_vc_isr(void);
 void rm_ethosu_isr(void);
+void ipc_isr(void);
 
 /* Vector table allocations */
 #define VECTOR_NUMBER_GLCDC_LINE_DETECT ((IRQn_Type) 0) /* GLCDC LINE DETECT (Specified line) */
@@ -50,8 +51,10 @@ void rm_ethosu_isr(void);
 #define MIPICSI_VC_IRQn          ((IRQn_Type) 11) /* MIPICSI VC (Virtual Channel interrupt) */
 #define VECTOR_NUMBER_NPU_IRQ ((IRQn_Type) 12) /* NPU IRQ (NPU IRQ) */
 #define NPU_IRQ_IRQn          ((IRQn_Type) 12) /* NPU IRQ (NPU IRQ) */
+#define VECTOR_NUMBER_IPC_IRQ0 ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+#define IPC_IRQ0_IRQn          ((IRQn_Type) 13) /* IPC IRQ0 (CPU Mutual Interrupt 0) */
 /* The number of entries required for the ICU vector table. */
-#define BSP_ICU_VECTOR_NUM_ENTRIES (13)
+#define BSP_ICU_VECTOR_NUM_ENTRIES (14)
 
 #ifdef __cplusplus
         }
