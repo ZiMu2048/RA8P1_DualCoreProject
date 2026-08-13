@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t ipc_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t ipc_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t ipc_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t ipc_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.ipc_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t ipc_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.ipc_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t ipc_thread;
@@ -70,7 +70,7 @@ void ipc_thread_create(void) {
 #else
                     BaseType_t ipc_thread_create_err = xTaskCreate(
                     #endif
-			ipc_thread_func, (const char*) "IPC Thread", 1024 / 4, // In words, not bytes
+			ipc_thread_func, (const char*) "IPC Thread", 2048 / 4, // In words, not bytes
 			(void*) &ipc_thread_parameters, //pvParameters
 			5,
 #if 1

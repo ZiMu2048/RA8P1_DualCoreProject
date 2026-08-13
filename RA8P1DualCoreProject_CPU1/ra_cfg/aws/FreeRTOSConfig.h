@@ -90,7 +90,7 @@ FSP_HEADER
 #define configUSE_ALTERNATIVE_API (0U)
 #endif
 #ifndef configCHECK_FOR_STACK_OVERFLOW
-#define configCHECK_FOR_STACK_OVERFLOW (0)
+#define configCHECK_FOR_STACK_OVERFLOW (1)
 #endif
 #ifndef configQUEUE_REGISTRY_SIZE
 #define configQUEUE_REGISTRY_SIZE (10)
@@ -198,7 +198,7 @@ FSP_HEADER
 #define INCLUDE_xTaskGetCurrentTaskHandle (1)
 #endif
 #ifndef INCLUDE_uxTaskGetStackHighWaterMark
-#define INCLUDE_uxTaskGetStackHighWaterMark (0)
+#define INCLUDE_uxTaskGetStackHighWaterMark (1)
 #endif
 #ifndef INCLUDE_xTaskGetIdleTaskHandle
 #define INCLUDE_xTaskGetIdleTaskHandle (0)
@@ -222,7 +222,7 @@ FSP_HEADER
 #define INCLUDE_xTaskResumeFromISR (1)
 #endif
 #ifndef RM_FREERTOS_PORT_CFG_HW_STACK_MONITOR_ENABLE
-#define RM_FREERTOS_PORT_CFG_HW_STACK_MONITOR_ENABLE  (0)
+#define RM_FREERTOS_PORT_CFG_HW_STACK_MONITOR_ENABLE  (1)
 #endif
 #ifndef configPRINT_STRING
 #define configPRINT_STRING(x)                      (vLoggingPrint(x))

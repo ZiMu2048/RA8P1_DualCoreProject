@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t vehicle_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t vehicle_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t vehicle_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t vehicle_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.vehicle_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t vehicle_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.vehicle_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t vehicle_thread;
@@ -620,7 +620,7 @@ void vehicle_thread_create(void) {
 #else
                     BaseType_t vehicle_thread_create_err = xTaskCreate(
                     #endif
-			vehicle_thread_func, (const char*) "Vehicle Thread", 1024 / 4, // In words, not bytes
+			vehicle_thread_func, (const char*) "Vehicle Thread", 3072 / 4, // In words, not bytes
 			(void*) &vehicle_thread_parameters, //pvParameters
 			7,
 #if 1

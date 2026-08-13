@@ -21,8 +21,8 @@ extern spi_b_instance_ctrl_t g_spi1_ctrl;
 extern const spi_cfg_t g_spi1_cfg;
 
 /** Callback used by SPI Instance. */
-#ifndef spi_callback
-void spi_callback(spi_callback_args_t *p_args);
+#ifndef nrf24_video_spi_callback
+void nrf24_video_spi_callback(spi_callback_args_t *p_args);
 #endif
 
 #define RA_NOT_DEFINED (1)

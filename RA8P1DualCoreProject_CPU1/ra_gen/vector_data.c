@@ -12,12 +12,16 @@
             [5] = spi_b_txi_isr, /* SPI0 TXI (Transmit buffer empty) */
             [6] = spi_b_tei_isr, /* SPI0 TEI (Transmission complete event) */
             [7] = spi_b_eri_isr, /* SPI0 ERI (Error) */
-            [8] = r_icu_isr, /* ICU IRQ0 (External pin interrupt 0) */
-            [9] = sci_b_uart_rxi_isr, /* SCI0 RXI (Receive data full) */
-            [10] = sci_b_uart_txi_isr, /* SCI0 TXI (Transmit data empty) */
-            [11] = sci_b_uart_tei_isr, /* SCI0 TEI (Transmit end) */
-            [12] = sci_b_uart_eri_isr, /* SCI0 ERI (Receive error) */
-            [13] = ipc_isr, /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+            [8] = r_icu_isr, /* ICU IRQ19 (External pin interrupt 19) */
+            [9] = spi_b_rxi_isr, /* SPI1 RXI (Receive buffer full) */
+            [10] = spi_b_txi_isr, /* SPI1 TXI (Transmit buffer empty) */
+            [11] = spi_b_tei_isr, /* SPI1 TEI (Transmission complete event) */
+            [12] = spi_b_eri_isr, /* SPI1 ERI (Error) */
+            [13] = sci_b_uart_rxi_isr, /* SCI0 RXI (Receive data full) */
+            [14] = sci_b_uart_txi_isr, /* SCI0 TXI (Transmit data empty) */
+            [15] = sci_b_uart_tei_isr, /* SCI0 TEI (Transmit end) */
+            [16] = sci_b_uart_eri_isr, /* SCI0 ERI (Receive error) */
+            [17] = ipc_isr, /* IPC IRQ0 (CPU Mutual Interrupt 0) */
         };
         #if BSP_FEATURE_ICU_HAS_IELSR
         const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_NUM_ENTRIES] =
@@ -30,12 +34,16 @@
             [5] = BSP_PRV_VECT_ENUM(EVENT_SPI0_TXI,GROUP5), /* SPI0 TXI (Transmit buffer empty) */
             [6] = BSP_PRV_VECT_ENUM(EVENT_SPI0_TEI,GROUP6), /* SPI0 TEI (Transmission complete event) */
             [7] = BSP_PRV_VECT_ENUM(EVENT_SPI0_ERI,GROUP7), /* SPI0 ERI (Error) */
-            [8] = BSP_PRV_VECT_ENUM(EVENT_ICU_IRQ0,GROUP0), /* ICU IRQ0 (External pin interrupt 0) */
-            [9] = BSP_PRV_VECT_ENUM(EVENT_SCI0_RXI,GROUP1), /* SCI0 RXI (Receive data full) */
-            [10] = BSP_PRV_VECT_ENUM(EVENT_SCI0_TXI,GROUP2), /* SCI0 TXI (Transmit data empty) */
-            [11] = BSP_PRV_VECT_ENUM(EVENT_SCI0_TEI,GROUP3), /* SCI0 TEI (Transmit end) */
-            [12] = BSP_PRV_VECT_ENUM(EVENT_SCI0_ERI,GROUP4), /* SCI0 ERI (Receive error) */
-            [13] = BSP_PRV_VECT_ENUM(EVENT_IPC_IRQ0,GROUP5), /* IPC IRQ0 (CPU Mutual Interrupt 0) */
+            [8] = BSP_PRV_VECT_ENUM(EVENT_ICU_IRQ19,GROUP0), /* ICU IRQ19 (External pin interrupt 19) */
+            [9] = BSP_PRV_VECT_ENUM(EVENT_SPI1_RXI,GROUP1), /* SPI1 RXI (Receive buffer full) */
+            [10] = BSP_PRV_VECT_ENUM(EVENT_SPI1_TXI,GROUP2), /* SPI1 TXI (Transmit buffer empty) */
+            [11] = BSP_PRV_VECT_ENUM(EVENT_SPI1_TEI,GROUP3), /* SPI1 TEI (Transmission complete event) */
+            [12] = BSP_PRV_VECT_ENUM(EVENT_SPI1_ERI,GROUP4), /* SPI1 ERI (Error) */
+            [13] = BSP_PRV_VECT_ENUM(EVENT_SCI0_RXI,GROUP5), /* SCI0 RXI (Receive data full) */
+            [14] = BSP_PRV_VECT_ENUM(EVENT_SCI0_TXI,GROUP6), /* SCI0 TXI (Transmit data empty) */
+            [15] = BSP_PRV_VECT_ENUM(EVENT_SCI0_TEI,GROUP7), /* SCI0 TEI (Transmit end) */
+            [16] = BSP_PRV_VECT_ENUM(EVENT_SCI0_ERI,GROUP0), /* SCI0 ERI (Receive error) */
+            [17] = BSP_PRV_VECT_ENUM(EVENT_IPC_IRQ0,GROUP1), /* IPC IRQ0 (CPU Mutual Interrupt 0) */
         };
         #endif
         #endif

@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t video_tx_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t video_tx_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t video_tx_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t video_tx_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.video_tx_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t video_tx_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.video_tx_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t video_tx_thread;
@@ -51,7 +51,7 @@ const spi_b_extended_cfg_t g_spi1_ext_cfg = { .spi_clksyn =
 		.mosi_idle = SPI_B_MOSI_IDLE_VALUE_FIXING_DISABLE, .parity =
 				SPI_B_PARITY_MODE_DISABLE, .byte_swap = SPI_B_BYTE_SWAP_DISABLE,
 		.clock_source = SPI_B_CLOCK_SOURCE_PCLK, .spck_div = {
-		/* Actual calculated bitrate: 15625000. */.spbr = 3, .brdv = 0 },
+		/* Actual calculated bitrate: 7812500. */.spbr = 7, .brdv = 0 },
 		.spck_delay = SPI_B_DELAY_COUNT_1, .ssl_negation_delay =
 				SPI_B_DELAY_COUNT_1, .next_access_delay = SPI_B_DELAY_COUNT_1,
 		.burst_interframe_delay = SPI_B_BURST_TRANSFER_WITH_DELAY
@@ -59,25 +59,25 @@ const spi_b_extended_cfg_t g_spi1_ext_cfg = { .spi_clksyn =
 };
 
 /** SPI configuration for SPI HAL driver */
-const spi_cfg_t g_spi1_cfg = { .channel = 0,
+const spi_cfg_t g_spi1_cfg = { .channel = 1,
 
-#if defined(VECTOR_NUMBER_SPI0_RXI)
-    .rxi_irq             = VECTOR_NUMBER_SPI0_RXI,
+#if defined(VECTOR_NUMBER_SPI1_RXI)
+    .rxi_irq             = VECTOR_NUMBER_SPI1_RXI,
 #else
 		.rxi_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SPI0_TXI)
-    .txi_irq             = VECTOR_NUMBER_SPI0_TXI,
+#if defined(VECTOR_NUMBER_SPI1_TXI)
+    .txi_irq             = VECTOR_NUMBER_SPI1_TXI,
 #else
 		.txi_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SPI0_TEI)
-    .tei_irq             = VECTOR_NUMBER_SPI0_TEI,
+#if defined(VECTOR_NUMBER_SPI1_TEI)
+    .tei_irq             = VECTOR_NUMBER_SPI1_TEI,
 #else
 		.tei_irq = FSP_INVALID_VECTOR,
 #endif
-#if defined(VECTOR_NUMBER_SPI0_ERI)
-    .eri_irq             = VECTOR_NUMBER_SPI0_ERI,
+#if defined(VECTOR_NUMBER_SPI1_ERI)
+    .eri_irq             = VECTOR_NUMBER_SPI1_ERI,
 #else
 		.eri_irq = FSP_INVALID_VECTOR,
 #endif
@@ -91,7 +91,8 @@ const spi_cfg_t g_spi1_cfg = { .channel = 0,
 
 		.mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order =
 				SPI_BIT_ORDER_MSB_FIRST, .p_transfer_tx = g_spi1_P_TRANSFER_TX,
-		.p_transfer_rx = g_spi1_P_TRANSFER_RX, .p_callback = spi_callback,
+		.p_transfer_rx = g_spi1_P_TRANSFER_RX, .p_callback =
+				nrf24_video_spi_callback,
 
 		.p_context = NULL, .p_extend = (void*) &g_spi1_ext_cfg, };
 
@@ -114,9 +115,9 @@ void video_tx_thread_create(void) {
 #else
                     BaseType_t video_tx_thread_create_err = xTaskCreate(
                     #endif
-			video_tx_thread_func, (const char*) "Video TX Thread", 1024 / 4, // In words, not bytes
+			video_tx_thread_func, (const char*) "Video TX Thread", 3072 / 4, // In words, not bytes
 			(void*) &video_tx_thread_parameters, //pvParameters
-			2,
+			4,
 #if 1
 			(StackType_t*) &video_tx_thread_stack,
 			(StaticTask_t*) &video_tx_thread_memory

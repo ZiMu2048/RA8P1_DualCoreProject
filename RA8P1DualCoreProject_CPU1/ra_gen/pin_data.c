@@ -24,22 +24,10 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 		| (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_IIC) },
 
-{ .pin = BSP_IO_PORT_05_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_05_PIN_02, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
 { .pin = BSP_IO_PORT_06_PIN_04, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
 
 { .pin = BSP_IO_PORT_06_PIN_05, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_08_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_08_PIN_11, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_GPT1) }, };
 
 const ioport_cfg_t g_bsp_pin_cfg = { .number_of_pins =

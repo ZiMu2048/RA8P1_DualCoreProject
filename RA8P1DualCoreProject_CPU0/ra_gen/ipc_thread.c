@@ -37,13 +37,13 @@ const ipc_instance_t g_ipc1 = { .p_ctrl = &g_ipc1_ctrl, .p_cfg = &g_ipc1_cfg,
 ipc_instance_ctrl_t g_ipc0_ctrl;
 
 /** IPC configuration */
-const ipc_cfg_t g_ipc0_cfg = { .channel = 0, .p_callback = NULL,
+const ipc_cfg_t g_ipc0_cfg = { .channel = 0, .p_callback = g_ipc0_callback,
 #if defined(NULL)
                 .p_context = NULL,
 #else
 		.p_context = (void*) &NULL,
 #endif
-		.ipl = (BSP_IRQ_DISABLED),
+		.ipl = (5),
 #if defined(VECTOR_NUMBER_IPC_IRQ0)
                 .irq = VECTOR_NUMBER_IPC_IRQ0,
 #else

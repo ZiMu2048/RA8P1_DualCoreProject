@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t wifi_upload_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t wifi_upload_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t wifi_upload_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t wifi_upload_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.wifi_upload_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t wifi_upload_thread_stack[3072] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.wifi_upload_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t wifi_upload_thread;
@@ -98,9 +98,9 @@ void wifi_upload_thread_create(void) {
                     BaseType_t wifi_upload_thread_create_err = xTaskCreate(
                     #endif
 			wifi_upload_thread_func, (const char*) "WIFI Upload Thread",
-			1024 / 4, // In words, not bytes
+			3072 / 4, // In words, not bytes
 			(void*) &wifi_upload_thread_parameters, //pvParameters
-			4,
+			3,
 #if 1
 			(StackType_t*) &wifi_upload_thread_stack,
 			(StaticTask_t*) &wifi_upload_thread_memory

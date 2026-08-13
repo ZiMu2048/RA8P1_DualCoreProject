@@ -448,7 +448,7 @@
       <property id="module.driver.spi_b.clk_polarity" value="module.driver.spi_b.clk_polarity.clk_polarity_low"/>
       <property id="module.driver.spi_b.mode_fault" value="module.driver.spi_b.mode_fault.mode_fault_error_disable"/>
       <property id="module.driver.spi_b.bit_order" value="module.driver.spi_b.bit_order.bit_order_msb_first"/>
-      <property id="module.driver.spi_b.p_callback" value="spi_callback"/>
+      <property id="module.driver.spi_b.p_callback" value="nrf24_command_spi_callback"/>
       <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_clksyn"/>
       <property id="module.driver.spi_b.spi_burst_transfer_without_delay" value="module.driver.spi_b.spi_burst_transfer_without_delay.disable"/>
       <property id="module.driver.spi_b.spi_comm" value="module.driver.spi_b.spi_comm.full_duplex"/>
@@ -458,14 +458,14 @@
       <property id="module.driver.spi_b.parity" value="module.driver.spi_b.parity_mode.disable"/>
       <property id="module.driver.spi_b.byte_swap" value="module.driver.spi_b.byte_swap.disable"/>
       <property id="module.driver.spi_b.clock_source" value="module.driver.spi_b.clock_source.pclk"/>
-      <property id="module.driver.spi_b.bitrate" value="16000000"/>
+      <property id="module.driver.spi_b.bitrate" value="8000000"/>
       <property id="module.driver.spi_b.spck_delay" value="module.driver.spi_b.spck_delay.one"/>
       <property id="module.driver.spi_b.ssl_negation_delay" value="module.driver.spi_b.ssl_negation_delay.one"/>
       <property id="module.driver.spi_b.next_access_delay" value="module.driver.spi_b.next_access_delay.one"/>
     </module>
     <module id="module.driver.spi_on_spi_b.794161435">
       <property id="module.driver.spi_b.name" value="g_spi1"/>
-      <property id="module.driver.spi_b.channel" value="0"/>
+      <property id="module.driver.spi_b.channel" value="1"/>
       <property id="module.driver.spi_b.rxi_ipl" value="board.icu.common.irq.priority12"/>
       <property id="module.driver.spi_b.txi_ipl" value="board.icu.common.irq.priority12"/>
       <property id="module.driver.spi_b.tei_ipl" value="board.icu.common.irq.priority12"/>
@@ -475,7 +475,7 @@
       <property id="module.driver.spi_b.clk_polarity" value="module.driver.spi_b.clk_polarity.clk_polarity_low"/>
       <property id="module.driver.spi_b.mode_fault" value="module.driver.spi_b.mode_fault.mode_fault_error_disable"/>
       <property id="module.driver.spi_b.bit_order" value="module.driver.spi_b.bit_order.bit_order_msb_first"/>
-      <property id="module.driver.spi_b.p_callback" value="spi_callback"/>
+      <property id="module.driver.spi_b.p_callback" value="nrf24_video_spi_callback"/>
       <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_clksyn"/>
       <property id="module.driver.spi_b.spi_burst_transfer_without_delay" value="module.driver.spi_b.spi_burst_transfer_without_delay.disable"/>
       <property id="module.driver.spi_b.spi_comm" value="module.driver.spi_b.spi_comm.full_duplex"/>
@@ -485,7 +485,7 @@
       <property id="module.driver.spi_b.parity" value="module.driver.spi_b.parity_mode.disable"/>
       <property id="module.driver.spi_b.byte_swap" value="module.driver.spi_b.byte_swap.disable"/>
       <property id="module.driver.spi_b.clock_source" value="module.driver.spi_b.clock_source.pclk"/>
-      <property id="module.driver.spi_b.bitrate" value="16000000"/>
+      <property id="module.driver.spi_b.bitrate" value="8000000"/>
       <property id="module.driver.spi_b.spck_delay" value="module.driver.spi_b.spck_delay.one"/>
       <property id="module.driver.spi_b.ssl_negation_delay" value="module.driver.spi_b.ssl_negation_delay.one"/>
       <property id="module.driver.spi_b.next_access_delay" value="module.driver.spi_b.next_access_delay.one"/>
@@ -531,22 +531,12 @@
     </module>
     <module id="module.driver.external_irq_on_icu.1364594764">
       <property id="module.driver.external_irq.name" value="g_external_irq0"/>
-      <property id="module.driver.external_irq.channel" value="0"/>
-      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_rising"/>
+      <property id="module.driver.external_irq.channel" value="19"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_falling"/>
       <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
       <property id="module.driver.external_irq.filter_source" value="module.driver.external_irq.filter_source.pclk"/>
       <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
-      <property id="module.driver.external_irq.p_callback" value="NULL"/>
-      <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
-    </module>
-    <module id="module.driver.external_irq_on_icu.1860795400">
-      <property id="module.driver.external_irq.name" value="g_external_irq1"/>
-      <property id="module.driver.external_irq.channel" value="0"/>
-      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_rising"/>
-      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
-      <property id="module.driver.external_irq.filter_source" value="module.driver.external_irq.filter_source.pclk"/>
-      <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
-      <property id="module.driver.external_irq.p_callback" value="NULL"/>
+      <property id="module.driver.external_irq.p_callback" value="nrf24_command_irq_callback"/>
       <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
     </module>
     <module id="module.driver.timer_on_gpt.66547312">
@@ -755,7 +745,7 @@
     <context id="rtos.awsfreertos.thread.0">
       <property id="_symbol" value="vehicle_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Vehicle Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.stack" value="3072"/>
       <property id="rtos.awsfreertos.thread.priority" value="7"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
@@ -771,39 +761,38 @@
     <context id="rtos.awsfreertos.thread.1302426618">
       <property id="_symbol" value="command_rx_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Command RX Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.stack" value="2048"/>
       <property id="rtos.awsfreertos.thread.priority" value="6"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
       <stack module="module.driver.spi_on_spi_b.1437547274"/>
+      <stack module="module.driver.external_irq_on_icu.1364594764"/>
     </context>
     <context id="rtos.awsfreertos.thread.1568800157">
       <property id="_symbol" value="video_tx_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Video TX Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
-      <property id="rtos.awsfreertos.thread.priority" value="2"/>
-      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
-      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
-      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
-      <stack module="module.driver.spi_on_spi_b.794161435"/>
-      <stack module="module.driver.external_irq_on_icu.1364594764"/>
-    </context>
-    <context id="rtos.awsfreertos.thread.1269323008">
-      <property id="_symbol" value="wifi_upload_thread"/>
-      <property id="rtos.awsfreertos.thread.name" value="WIFI Upload Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.stack" value="3072"/>
       <property id="rtos.awsfreertos.thread.priority" value="4"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
+      <stack module="module.driver.spi_on_spi_b.794161435"/>
+    </context>
+    <context id="rtos.awsfreertos.thread.1269323008">
+      <property id="_symbol" value="wifi_upload_thread"/>
+      <property id="rtos.awsfreertos.thread.name" value="WIFI Upload Thread"/>
+      <property id="rtos.awsfreertos.thread.stack" value="3072"/>
+      <property id="rtos.awsfreertos.thread.priority" value="3"/>
+      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
+      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
+      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
       <stack module="module.driver.uart_on_sci_b_uart.314627518"/>
-      <stack module="module.driver.external_irq_on_icu.1860795400"/>
     </context>
     <context id="rtos.awsfreertos.thread.1346798436">
       <property id="_symbol" value="ipc_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="IPC Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
+      <property id="rtos.awsfreertos.thread.stack" value="2048"/>
       <property id="rtos.awsfreertos.thread.priority" value="5"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
@@ -865,7 +854,7 @@
       <property id="config.awsfreertos.thread.configuse_mutexes" value="config.awsfreertos.thread.configuse_mutexes.disabled"/>
       <property id="config.awsfreertos.thread.configuse_recursive_mutexes" value="config.awsfreertos.thread.configuse_recursive_mutexes.disabled"/>
       <property id="config.awsfreertos.thread.configuse_counting_semaphores" value="config.awsfreertos.thread.configuse_counting_semaphores.enabled"/>
-      <property id="config.awsfreertos.thread.configcheck_for_stack_overflow" value="config.awsfreertos.thread.configcheck_for_stack_overflow.disabled"/>
+      <property id="config.awsfreertos.thread.configcheck_for_stack_overflow" value="config.awsfreertos.thread.configcheck_for_stack_overflow.enabled"/>
       <property id="config.awsfreertos.thread.configqueue_registry_size" value="10"/>
       <property id="config.awsfreertos.thread.configuse_queue_sets" value="config.awsfreertos.thread.configuse_queue_sets.disabled"/>
       <property id="config.awsfreertos.thread.configuse_time_slicing" value="config.awsfreertos.thread.configuse_time_slicing.disabled"/>
@@ -896,7 +885,7 @@
       <property id="config.awsfreertos.thread.include_vtaskdelay" value="config.awsfreertos.thread.include_vtaskdelay.enabled"/>
       <property id="config.awsfreertos.thread.include_xtaskgetschedulerstate" value="config.awsfreertos.thread.include_xtaskgetschedulerstate.enabled"/>
       <property id="config.awsfreertos.thread.include_xtaskgetcurrenttaskhandle" value="config.awsfreertos.thread.include_xtaskgetcurrenttaskhandle.enabled"/>
-      <property id="config.awsfreertos.thread.include_uxtaskgetstackhighwatermark" value="config.awsfreertos.thread.include_uxtaskgetstackhighwatermark.disabled"/>
+      <property id="config.awsfreertos.thread.include_uxtaskgetstackhighwatermark" value="config.awsfreertos.thread.include_uxtaskgetstackhighwatermark.enabled"/>
       <property id="config.awsfreertos.thread.include_xtaskgetidletaskhandle" value="config.awsfreertos.thread.include_xtaskgetidletaskhandle.disabled"/>
       <property id="config.awsfreertos.thread.include_etaskgetstate" value="config.awsfreertos.thread.include_etaskgetstate.disabled"/>
       <property id="config.awsfreertos.thread.include_xeventgroupsetbitfromisr" value="config.awsfreertos.thread.include_xeventgroupsetbitfromisr.enabled"/>
@@ -904,7 +893,7 @@
       <property id="config.awsfreertos.thread.include_xtaskabortdelay" value="config.awsfreertos.thread.include_xtaskabortdelay.disabled"/>
       <property id="config.awsfreertos.thread.include_xtaskgethandle" value="config.awsfreertos.thread.include_xtaskgethandle.disabled"/>
       <property id="config.awsfreertos.thread.include_xtaskresumefromisr" value="config.awsfreertos.thread.include_xtaskresumefromisr.enabled"/>
-      <property id="config.awsfreertos.thread.include_hw_stack_monitor" value="config.awsfreertos.thread.include_hw_stack_monitor.disabled"/>
+      <property id="config.awsfreertos.thread.include_hw_stack_monitor" value="config.awsfreertos.thread.include_hw_stack_monitor.enabled"/>
       <property id="config.awsfreertos.thread.print_function" value="vLoggingPrint(x)"/>
       <property id="config.awsfreertos.thread.include_time_and_task" value="config.awsfreertos.thread.include_time_and_task.disabled"/>
       <property id="config.awsfreertos.thread.debug_logging_name" value="Log Name"/>
@@ -916,13 +905,18 @@
     </config>
   </raModuleConfiguration>
   <raPinConfiguration>
+    <symbolicName propertyId="p100.symbolic_name" value="NRF_VIDEO_MISO"/>
+    <symbolicName propertyId="p101.symbolic_name" value="NRF_VIDEO_MOSI"/>
+    <symbolicName propertyId="p102.symbolic_name" value="NRF_VIDEO_SCK"/>
+    <symbolicName propertyId="p103.symbolic_name" value="NRF_VIDEO_CSN"/>
+    <symbolicName propertyId="p104.symbolic_name" value="NRF_VIDEO_CE"/>
+    <symbolicName propertyId="p700.symbolic_name" value="NRF_COMMAND_MISO"/>
+    <symbolicName propertyId="p701.symbolic_name" value="NRF_COMMAND_MOSI"/>
+    <symbolicName propertyId="p702.symbolic_name" value="NRF_COMMAND_SCK"/>
+    <symbolicName propertyId="p703.symbolic_name" value="NRF_COMMAND_CSN"/>
+    <symbolicName propertyId="p704.symbolic_name" value="NRF_COMMAND_CE"/>
+    <symbolicName propertyId="p705.symbolic_name" value="NRF_COMMAND_IRQ"/>
     <pincfg active="true" name="R7KA8P1KFLCAC.pincfg" selected="true" symbol="g_bsp_pin_cfg">
-      <configSetting altId="gpt10.gtioc10a.p810" configurationId="gpt10.gtioc10a"/>
-      <configSetting altId="gpt10.gtioc10b.p811" configurationId="gpt10.gtioc10b"/>
-      <configSetting altId="gpt10.mode.gtiocaandgtiocb.free" configurationId="gpt10.mode"/>
-      <configSetting altId="gpt12.gtioc12a.p501" configurationId="gpt12.gtioc12a"/>
-      <configSetting altId="gpt12.gtioc12b.p502" configurationId="gpt12.gtioc12b"/>
-      <configSetting altId="gpt12.mode.gtiocaandgtiocb.free" configurationId="gpt12.mode"/>
       <configSetting altId="gpt6.gtioc6a.p400" configurationId="gpt6.gtioc6a"/>
       <configSetting altId="gpt6.gtioc6b.p401" configurationId="gpt6.gtioc6b"/>
       <configSetting altId="gpt6.mode.gtiocaandgtiocb.free" configurationId="gpt6.mode"/>
@@ -950,22 +944,10 @@
       <configSetting altId="p410.iic0.scl0" configurationId="p410"/>
       <configSetting altId="p410.gpio_speed.gpio_speed_m" configurationId="p410.gpio_drivecapacity"/>
       <configSetting altId="p410.gpio_mode.gpio_mode_peripheral" configurationId="p410.gpio_mode"/>
-      <configSetting altId="p501.gpt12.gtioc12a" configurationId="p501"/>
-      <configSetting altId="p501.gpio_mode.gpio_mode_peripheral" configurationId="p501.gpio_mode"/>
-      <configSetting altId="p502.gpt12.gtioc12b" configurationId="p502"/>
-      <configSetting altId="p502.gpio_mode.gpio_mode_peripheral" configurationId="p502.gpio_mode"/>
       <configSetting altId="p604.gpt8.gtioc8b" configurationId="p604"/>
       <configSetting altId="p604.gpio_mode.gpio_mode_peripheral" configurationId="p604.gpio_mode"/>
       <configSetting altId="p605.gpt8.gtioc8a" configurationId="p605"/>
       <configSetting altId="p605.gpio_mode.gpio_mode_peripheral" configurationId="p605.gpio_mode"/>
-      <configSetting altId="p810.gpt10.gtioc10a" configurationId="p810"/>
-      <configSetting altId="p810.gpio_mode.gpio_mode_peripheral" configurationId="p810.gpio_mode"/>
-      <configSetting altId="p811.gpt10.gtioc10b" configurationId="p811"/>
-      <configSetting altId="p811.gpio_mode.gpio_mode_peripheral" configurationId="p811.gpio_mode"/>
-      <lockSetting id="gpt10.gtioc10a" lock="true"/>
-      <lockSetting id="gpt10.gtioc10b" lock="true"/>
-      <lockSetting id="gpt12.gtioc12a" lock="true"/>
-      <lockSetting id="gpt12.gtioc12b" lock="true"/>
       <lockSetting id="gpt6.gtioc6a" lock="true"/>
       <lockSetting id="gpt6.gtioc6b" lock="true"/>
       <lockSetting id="gpt7.gtioc7a" lock="true"/>

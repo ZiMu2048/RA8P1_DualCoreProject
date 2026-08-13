@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t command_rx_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t command_rx_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t command_rx_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t command_rx_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.command_rx_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t command_rx_thread_stack[2048] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.command_rx_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t command_rx_thread;
@@ -51,7 +51,7 @@ const spi_b_extended_cfg_t g_spi0_ext_cfg = { .spi_clksyn =
 		.mosi_idle = SPI_B_MOSI_IDLE_VALUE_FIXING_DISABLE, .parity =
 				SPI_B_PARITY_MODE_DISABLE, .byte_swap = SPI_B_BYTE_SWAP_DISABLE,
 		.clock_source = SPI_B_CLOCK_SOURCE_PCLK, .spck_div = {
-		/* Actual calculated bitrate: 15625000. */.spbr = 3, .brdv = 0 },
+		/* Actual calculated bitrate: 7812500. */.spbr = 7, .brdv = 0 },
 		.spck_delay = SPI_B_DELAY_COUNT_1, .ssl_negation_delay =
 				SPI_B_DELAY_COUNT_1, .next_access_delay = SPI_B_DELAY_COUNT_1,
 		.burst_interframe_delay = SPI_B_BURST_TRANSFER_WITH_DELAY
@@ -91,7 +91,8 @@ const spi_cfg_t g_spi0_cfg = { .channel = 0,
 
 		.mode_fault = SPI_MODE_FAULT_ERROR_DISABLE, .bit_order =
 				SPI_BIT_ORDER_MSB_FIRST, .p_transfer_tx = g_spi0_P_TRANSFER_TX,
-		.p_transfer_rx = g_spi0_P_TRANSFER_RX, .p_callback = spi_callback,
+		.p_transfer_rx = g_spi0_P_TRANSFER_RX, .p_callback =
+				nrf24_command_spi_callback,
 
 		.p_context = NULL, .p_extend = (void*) &g_spi0_ext_cfg, };
 
@@ -114,7 +115,7 @@ void command_rx_thread_create(void) {
 #else
                     BaseType_t command_rx_thread_create_err = xTaskCreate(
                     #endif
-			command_rx_thread_func, (const char*) "Command RX Thread", 1024 / 4, // In words, not bytes
+			command_rx_thread_func, (const char*) "Command RX Thread", 2048 / 4, // In words, not bytes
 			(void*) &command_rx_thread_parameters, //pvParameters
 			6,
 #if 1

@@ -17,6 +17,7 @@
             [10] = mipi_csi_dl_isr, /* MIPICSI DL (Data Lane interrupt) */
             [11] = mipi_csi_vc_isr, /* MIPICSI VC (Virtual Channel interrupt) */
             [12] = rm_ethosu_isr, /* NPU IRQ (NPU IRQ) */
+            [13] = ipc_isr, /* IPC IRQ0 (CPU Mutual Interrupt 0) */
         };
         #if BSP_FEATURE_ICU_HAS_IELSR
         const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_NUM_ENTRIES] =
@@ -34,6 +35,7 @@
             [10] = BSP_PRV_VECT_ENUM(EVENT_MIPICSI_DL,GROUP2), /* MIPICSI DL (Data Lane interrupt) */
             [11] = BSP_PRV_VECT_ENUM(EVENT_MIPICSI_VC,GROUP3), /* MIPICSI VC (Virtual Channel interrupt) */
             [12] = BSP_PRV_VECT_ENUM(EVENT_NPU_IRQ,GROUP4), /* NPU IRQ (NPU IRQ) */
+            [13] = BSP_PRV_VECT_ENUM(EVENT_IPC_IRQ0,GROUP5), /* IPC IRQ0 (CPU Mutual Interrupt 0) */
         };
         #endif
         #endif
