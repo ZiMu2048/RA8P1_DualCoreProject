@@ -18,6 +18,16 @@ extern const external_irq_cfg_t g_external_irq0_cfg;
 #ifndef nrf24_command_irq_callback
 void nrf24_command_irq_callback(external_irq_callback_args_t *p_args);
 #endif
+/** External IRQ on ICU Instance. */
+extern const external_irq_instance_t g_external_irq19;
+
+/** Access the ICU instance using these structures when calling API functions directly (::p_api is not used). */
+extern icu_instance_ctrl_t g_external_irq19_ctrl;
+extern const external_irq_cfg_t g_external_irq19_cfg;
+
+#ifndef NULL
+void NULL(external_irq_callback_args_t *p_args);
+#endif
 #define IOPORT_CFG_NAME g_bsp_pin_cfg
 #define IOPORT_CFG_OPEN R_IOPORT_Open
 #define IOPORT_CFG_CTRL g_ioport_ctrl

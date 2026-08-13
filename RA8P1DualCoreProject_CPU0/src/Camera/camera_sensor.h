@@ -155,10 +155,40 @@ typedef enum
 #define MIPI_XCLK_HZ                (24000000)
 #define PLCK_MAX_HZ                 (96000000)
 
-/* Functions declarations */
+/*
+ *[@name] camera_open
+ *[@type] function
+ *[@usage] 复位并初始化1024x600 OV5640摄像头
+ *[@argument] none
+ *[@return] 成功返回FSP_SUCCESS，否则返回对应FSP错误码
+ */
 fsp_err_t camera_open (void);
+
+/*
+ *[@name] camera_stream_on
+ *[@type] function
+ *[@usage] 唤醒OV5640并启动图像输出
+ *[@argument] none
+ *[@return] 成功返回FSP_SUCCESS，否则返回对应FSP错误码
+ */
 fsp_err_t camera_stream_on(void);
+
+/*
+ *[@name] camera_stream_off
+ *[@type] function
+ *[@usage] 停止OV5640图像输出
+ *[@argument] none
+ *[@return] 成功返回FSP_SUCCESS，否则返回对应FSP错误码
+ */
 fsp_err_t camera_stream_off(void);
+
+/*
+ *[@name] camera_write_array
+ *[@type] function
+ *[@usage] 写入以REG_END结尾的OV5640寄存器配置表并回读校验
+ *[@argument] p_array 摄像头寄存器配置表首地址
+ *[@return] 成功返回FSP_SUCCESS，否则返回对应FSP错误码
+ */
 fsp_err_t camera_write_array (sensor_reg_t const * p_array);
 
 #endif /* CAMERA_SENSOR_H_ */

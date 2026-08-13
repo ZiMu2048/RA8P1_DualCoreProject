@@ -511,7 +511,7 @@
       <property id="module.driver.uart.rs485.de_assertion_time" value="1"/>
       <property id="module.driver.uart.rs485.de_negation_time" value="1"/>
       <property id="module.driver.uart.tei_synchronization_delay_cycles" value="0"/>
-      <property id="module.driver.uart.callback" value="NULL"/>
+      <property id="module.driver.uart.callback" value="UART0_CallBack"/>
       <property id="module.driver.uart.rxi_ipl" value="board.icu.common.irq.priority12"/>
       <property id="module.driver.uart.txi_ipl" value="board.icu.common.irq.priority12"/>
       <property id="module.driver.uart.tei_ipl" value="board.icu.common.irq.priority12"/>
@@ -737,6 +737,16 @@
       <property id="module.driver.timer.gtioca_disable_setting" value="module.driver.timer.gtioca_disable_setting.gtioc_disable_prohibited"/>
       <property id="module.driver.timer.gtiocb_disable_setting" value="module.driver.timer.gtiocb_disable_setting.gtioc_disable_prohibited"/>
     </module>
+    <module id="module.driver.external_irq_on_icu.170150182">
+      <property id="module.driver.external_irq.name" value="g_external_irq19"/>
+      <property id="module.driver.external_irq.channel" value="19"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_rising"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
+      <property id="module.driver.external_irq.filter_source" value="module.driver.external_irq.filter_source.pclk"/>
+      <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
+      <property id="module.driver.external_irq.p_callback" value="NULL"/>
+      <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
+    </module>
     <context id="_hal.0">
       <stack module="module.driver.ioport_on_ioport.0"/>
       <stack module="module.middleware.rm_freertos_port.0"/>
@@ -767,7 +777,7 @@
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
       <stack module="module.driver.spi_on_spi_b.1437547274"/>
-      <stack module="module.driver.external_irq_on_icu.1364594764"/>
+      <stack module="module.driver.external_irq_on_icu.170150182"/>
     </context>
     <context id="rtos.awsfreertos.thread.1568800157">
       <property id="_symbol" value="video_tx_thread"/>
@@ -782,8 +792,8 @@
     <context id="rtos.awsfreertos.thread.1269323008">
       <property id="_symbol" value="wifi_upload_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="WIFI Upload Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="3072"/>
-      <property id="rtos.awsfreertos.thread.priority" value="3"/>
+      <property id="rtos.awsfreertos.thread.stack" value="6144"/>
+      <property id="rtos.awsfreertos.thread.priority" value="4"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -948,6 +958,20 @@
       <configSetting altId="p604.gpio_mode.gpio_mode_peripheral" configurationId="p604.gpio_mode"/>
       <configSetting altId="p605.gpt8.gtioc8a" configurationId="p605"/>
       <configSetting altId="p605.gpio_mode.gpio_mode_peripheral" configurationId="p605.gpio_mode"/>
+      <configSetting altId="p810.gpt10.gtioc10a" configurationId="p810"/>
+      <configSetting altId="p810.gpio_mode.gpio_mode_peripheral" configurationId="p810.gpio_mode"/>
+      <configSetting altId="p811.gpt10.gtioc10b" configurationId="p811"/>
+      <configSetting altId="p811.gpio_mode.gpio_mode_peripheral" configurationId="p811.gpio_mode"/>
+      <configSetting altId="p602.sci0.rxd0" configurationId="p602"/>
+      <configSetting altId="p602.gpio_mode.gpio_mode_peripheral" configurationId="p602.gpio_mode"/>
+      <configSetting altId="p603.sci0.txd0" configurationId="p603"/>
+      <configSetting altId="p603.gpio_mode.gpio_mode_peripheral" configurationId="p603.gpio_mode"/>
+      <configSetting altId="sci0.rxd0.p602" configurationId="sci0.rxd0"/>
+      <configSetting altId="sci0.txd0.p603" configurationId="sci0.txd0"/>
+      <lockSetting id="gpt10.gtioc10a" lock="true"/>
+      <lockSetting id="gpt10.gtioc10b" lock="true"/>
+      <lockSetting id="gpt12.gtioc12a" lock="true"/>
+      <lockSetting id="gpt12.gtioc12b" lock="true"/>
       <lockSetting id="gpt6.gtioc6a" lock="true"/>
       <lockSetting id="gpt6.gtioc6b" lock="true"/>
       <lockSetting id="gpt7.gtioc7a" lock="true"/>
@@ -956,6 +980,8 @@
       <lockSetting id="gpt8.gtioc8b" lock="true"/>
       <lockSetting id="iic0.scl0" lock="true"/>
       <lockSetting id="iic0.sda0" lock="true"/>
+      <lockSetting id="sci0.rxd0" lock="true"/>
+      <lockSetting id="sci0.txd0" lock="true"/>
     </pincfg>
   </raPinConfiguration>
 </raConfiguration>

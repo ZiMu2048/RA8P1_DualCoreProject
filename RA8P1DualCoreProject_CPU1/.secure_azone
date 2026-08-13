@@ -259,8 +259,14 @@
             <slot name="P410.CPU1" secure="true"/>
         </peripheral>
         <peripheral name="PORT6.CPU1" group="PORT">
+            <slot name="P602.CPU1" secure="true"/>
+            <slot name="P603.CPU1" secure="true"/>
             <slot name="P604.CPU1" secure="true"/>
             <slot name="P605.CPU1" secure="true"/>
+        </peripheral>
+        <peripheral name="PORT8.CPU1" group="PORT">
+            <slot name="P810.CPU1" secure="true"/>
+            <slot name="P811.CPU1" secure="true"/>
         </peripheral>
         <peripheral name="IIC0.CPU1" group="IIC" security="s"/>
         <peripheral name="GPT6.CPU1" group="GPT" security="s"/>
@@ -268,6 +274,7 @@
         <peripheral name="GPT8.CPU1" group="GPT" security="s"/>
         <peripheral name="ICU_EXT_IRQ.CPU1">
             <slot name="ICU_EXT_IRQ19.CPU1" secure="true"/>
+            <slot name="ICU_EXT_IRQ0.CPU1" secure="true"/>
         </peripheral>
         <peripheral name="ICU.CPU1">
             <slot name="IRQ0.CPU1" secure="true"/>
@@ -285,9 +292,6 @@
             <slot name="IRQ12.CPU1" secure="true"/>
             <slot name="IRQ13.CPU1" secure="true"/>
             <slot name="IRQ14.CPU1" secure="true"/>
-            <slot name="IRQ15.CPU1" secure="true"/>
-            <slot name="IRQ16.CPU1" secure="true"/>
-            <slot name="IRQ17.CPU1" secure="true"/>
         </peripheral>
     </partition>
     <zones>

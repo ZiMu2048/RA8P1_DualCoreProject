@@ -13,6 +13,8 @@ extern void ipc_thread_create(void);
 extern TaskHandle_t ipc_thread;
 extern void encode_thread_create(void);
 extern TaskHandle_t encode_thread;
+extern void nRF27L01_create(void);
+extern TaskHandle_t nRF27L01;
 uint32_t g_fsp_common_thread_count;
 bool g_fsp_common_initialized;
 SemaphoreHandle_t g_fsp_common_initialized_semaphore;
@@ -107,6 +109,7 @@ int main(void) {
 	ai_thread_create();
 	ipc_thread_create();
 	encode_thread_create();
+	nRF27L01_create();
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();

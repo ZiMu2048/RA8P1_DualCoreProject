@@ -1027,14 +1027,14 @@ FSP Configuration
       SSL Negation Delay: 1 Clock
       Next Access Delay: 1 Clock
       
-    Instance "g_external_irq0 External IRQ (r_icu)"
-      Name: g_external_irq0
+    Instance "g_external_irq19 External IRQ (r_icu)"
+      Name: g_external_irq19
       Channel: 19
-      Trigger: Falling
+      Trigger: Rising
       Digital Filtering: Disabled
       Filter Source: PCLK filter
       Digital Filtering Sample Clock (Only valid when Digital Filtering is Enabled): PCLK / 64
-      Callback: nrf24_command_irq_callback
+      Callback: NULL
       Pin Interrupt Priority: Priority 12
       
   Thread "Video TX Thread"

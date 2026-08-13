@@ -13,6 +13,16 @@
 
 #define AI_PREPROCESS_PIXELS_PER_VECTOR    (8U)
 
+/*
+ *[@name] ai_preprocess_ranges_overlap
+ *[@type] static function
+ *[@usage] 判断两个连续内存区间是否重叠，防止预处理原始帧、模型输入和工作区互相覆盖
+ *[@argument] p_first 第一个内存区间的首地址
+ *[@argument] first_size_bytes 第一个内存区间的长度，单位为字节
+ *[@argument] p_second 第二个内存区间的首地址
+ *[@argument] second_size_bytes 第二个内存区间的长度，单位为字节
+ *[@return] 两个区间重叠返回true，否则返回false
+ */
 static bool ai_preprocess_ranges_overlap(void const * p_first,
                                          size_t first_size_bytes,
                                          void const * p_second,
@@ -27,6 +37,18 @@ static bool ai_preprocess_ranges_overlap(void const * p_first,
             (second_begin < first_end));
 }
 
+/*
+ *[@name] ai_preprocess_rgb565_to_int8
+ *[@type] function
+ *[@usage] 使用Helium将1024x600 RGB565画面中心裁剪并缩放为128x128 RGB INT8模型输入
+ *[@argument] p_source VIN完成帧的只读首地址
+ *[@argument] source_size_bytes 源缓冲区可访问长度，单位为字节
+ *[@argument] p_destination 模型INT8输入张量首地址
+ *[@argument] destination_size_bytes 目标张量容量，单位为字节
+ *[@argument] p_horizontal_map 横向最近邻采样索引工作区
+ *[@argument] horizontal_map_length 横向索引工作区的uint16_t元素数量
+ *[@return] 返回预处理状态，成功时返回AI_PREPROCESS_SUCCESS
+ */
 ai_preprocess_status_t ai_preprocess_rgb565_to_int8(
     uint8_t const * p_source,
     size_t source_size_bytes,

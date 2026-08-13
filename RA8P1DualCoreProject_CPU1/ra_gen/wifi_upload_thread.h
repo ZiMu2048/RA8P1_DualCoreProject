@@ -22,8 +22,8 @@ extern sci_b_uart_instance_ctrl_t g_uart0_ctrl;
 extern const uart_cfg_t g_uart0_cfg;
 extern const sci_b_uart_extended_cfg_t g_uart0_cfg_extend;
 
-#ifndef NULL
-void NULL(uart_callback_args_t *p_args);
+#ifndef UART0_CallBack
+void UART0_CallBack(uart_callback_args_t *p_args);
 #endif
 FSP_FOOTER
 #endif /* WIFI_UPLOAD_THREAD_H_ */

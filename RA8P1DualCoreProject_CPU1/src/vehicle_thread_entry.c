@@ -66,6 +66,7 @@ void vehicle_thread_entry(void * pvParameters)
 {
     vehicle_dependencies_t dependencies;
     vehicle_command_t command;
+    vehicle_result_t init_result;
     TickType_t wake_tick;
     TickType_t last_command_tick;
     bool remote_command_seen = false;
@@ -76,12 +77,26 @@ void vehicle_thread_entry(void * pvParameters)
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
-    if ((!vehicle_command_mailbox_init()) ||
-        (!fsp_vehicle_dependencies_create(&dependencies)) ||
-        (VEHICLE_RESULT_OK != vehicle_service_init(&dependencies)))
+    if(!vehicle_command_mailbox_init())
     {
         vehicle_service_emergency_stop();
-        g_printf("[VEHICLE][FATAL] initialization failed\r\n");
+        g_printf("[VEHICLE][FATAL] command mailbox initialization failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
+    if(!fsp_vehicle_dependencies_create(&dependencies))
+    {
+        vehicle_service_emergency_stop();
+        g_printf("[VEHICLE][FATAL] dependency initialization failed; check IIC0 open.\r\n");
+        vTaskSuspend(NULL);
+    }
+
+    init_result = vehicle_service_init(&dependencies);
+    if(VEHICLE_RESULT_OK != init_result)
+    {
+        vehicle_service_emergency_stop();
+        g_printf("[VEHICLE][FATAL] service initialization failed: %u.\r\n",
+                 (unsigned int) init_result);
         vTaskSuspend(NULL);
     }
 
