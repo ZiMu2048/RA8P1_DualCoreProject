@@ -389,10 +389,10 @@ const timer_cfg_t g_left_wheel_cfg = { .mode = TIMER_MODE_PWM,
 /* Instance structure to use this module. */
 const timer_instance_t g_left_wheel = { .p_ctrl = &g_left_wheel_ctrl, .p_cfg =
 		&g_left_wheel_cfg, .p_api = &g_timer_on_gpt };
-dtc_instance_ctrl_t g_transfer3_ctrl;
+dtc_instance_ctrl_t g_transfer1_ctrl;
 
 #if (BSP_CFG_DCACHE_ENABLED) && (1 == 1)
-const transfer_info_t g_transfer3_user_config_info =
+const transfer_info_t g_transfer1_user_config_info =
 {
     .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED,
     .transfer_settings_word_b.repeat_area    = TRANSFER_REPEAT_AREA_DESTINATION,
@@ -410,13 +410,13 @@ const transfer_info_t g_transfer3_user_config_info =
 
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 > 0)
-    transfer_info_t g_transfer3_info_fsp_nocache[1] DTC_TRANSFER_INFO_ALIGNMENT;
+    transfer_info_t g_transfer1_info_fsp_nocache[1] DTC_TRANSFER_INFO_ALIGNMENT;
     #else
     /* User must call api::reconfigure before enable DTC transfer. */
     #endif
 #else
 #if (1 == 1)
-transfer_info_t g_transfer3_info DTC_TRANSFER_INFO_ALIGNMENT =
+transfer_info_t g_transfer1_info DTC_TRANSFER_INFO_ALIGNMENT =
 		{ .transfer_settings_word_b.dest_addr_mode =
 				TRANSFER_ADDR_MODE_INCREMENTED,
 				.transfer_settings_word_b.repeat_area =
@@ -432,18 +432,18 @@ transfer_info_t g_transfer3_info DTC_TRANSFER_INFO_ALIGNMENT =
 						(uint16_t) 0, .length = (uint16_t) 0, };
 #elif (1 > 1)
     /* User is responsible to initialize the array. */
-    transfer_info_t g_transfer3_info[1] DTC_TRANSFER_INFO_ALIGNMENT;
+    transfer_info_t g_transfer1_info[1] DTC_TRANSFER_INFO_ALIGNMENT;
     #else
     /* User must call api::reconfigure before enable DTC transfer. */
     #endif
 #endif
 
-const dtc_extended_cfg_t g_transfer3_cfg_extend = { .activation_source =
+const dtc_extended_cfg_t g_transfer1_cfg_extend = { .activation_source =
 		VECTOR_NUMBER_IIC0_RXI,
 
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 == 1)
-        .p_user_config_info =  &g_transfer3_user_config_info,
+        .p_user_config_info =  &g_transfer1_user_config_info,
     #else
         .p_user_config_info = NULL,
     #endif
@@ -452,31 +452,31 @@ const dtc_extended_cfg_t g_transfer3_cfg_extend = { .activation_source =
 #endif
 		};
 
-const transfer_cfg_t g_transfer3_cfg = {
+const transfer_cfg_t g_transfer1_cfg = {
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 > 0)
-        .p_info              = g_transfer3_info_fsp_nocache,
+        .p_info              = g_transfer1_info_fsp_nocache,
     #else
         .p_info = NULL,
     #endif
 #else
 #if (1 == 1)
-		.p_info = &g_transfer3_info,
+		.p_info = &g_transfer1_info,
 #elif (1 > 1)
-        .p_info              = g_transfer3_info,
+        .p_info              = g_transfer1_info,
     #else
         .p_info = NULL,
     #endif
 #endif
-		.p_extend = &g_transfer3_cfg_extend, };
+		.p_extend = &g_transfer1_cfg_extend, };
 
 /* Instance structure to use this module. */
-const transfer_instance_t g_transfer3 = { .p_ctrl = &g_transfer3_ctrl, .p_cfg =
-		&g_transfer3_cfg, .p_api = &g_transfer_on_dtc };
-dtc_instance_ctrl_t g_transfer2_ctrl;
+const transfer_instance_t g_transfer1 = { .p_ctrl = &g_transfer1_ctrl, .p_cfg =
+		&g_transfer1_cfg, .p_api = &g_transfer_on_dtc };
+dtc_instance_ctrl_t g_transfer0_ctrl;
 
 #if (BSP_CFG_DCACHE_ENABLED) && (1 == 1)
-const transfer_info_t g_transfer2_user_config_info =
+const transfer_info_t g_transfer0_user_config_info =
 {
     .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
     .transfer_settings_word_b.repeat_area    = TRANSFER_REPEAT_AREA_SOURCE,
@@ -494,13 +494,13 @@ const transfer_info_t g_transfer2_user_config_info =
 
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 > 0)
-    transfer_info_t g_transfer2_info_fsp_nocache[1] DTC_TRANSFER_INFO_ALIGNMENT;
+    transfer_info_t g_transfer0_info_fsp_nocache[1] DTC_TRANSFER_INFO_ALIGNMENT;
     #else
     /* User must call api::reconfigure before enable DTC transfer. */
     #endif
 #else
 #if (1 == 1)
-transfer_info_t g_transfer2_info DTC_TRANSFER_INFO_ALIGNMENT =
+transfer_info_t g_transfer0_info DTC_TRANSFER_INFO_ALIGNMENT =
 		{ .transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED,
 				.transfer_settings_word_b.repeat_area =
 						TRANSFER_REPEAT_AREA_SOURCE,
@@ -515,18 +515,18 @@ transfer_info_t g_transfer2_info DTC_TRANSFER_INFO_ALIGNMENT =
 						(uint16_t) 0, .length = (uint16_t) 0, };
 #elif (1 > 1)
     /* User is responsible to initialize the array. */
-    transfer_info_t g_transfer2_info[1] DTC_TRANSFER_INFO_ALIGNMENT;
+    transfer_info_t g_transfer0_info[1] DTC_TRANSFER_INFO_ALIGNMENT;
     #else
     /* User must call api::reconfigure before enable DTC transfer. */
     #endif
 #endif
 
-const dtc_extended_cfg_t g_transfer2_cfg_extend = { .activation_source =
+const dtc_extended_cfg_t g_transfer0_cfg_extend = { .activation_source =
 		VECTOR_NUMBER_IIC0_TXI,
 
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 == 1)
-        .p_user_config_info =  &g_transfer2_user_config_info,
+        .p_user_config_info =  &g_transfer0_user_config_info,
     #else
         .p_user_config_info = NULL,
     #endif
@@ -535,27 +535,27 @@ const dtc_extended_cfg_t g_transfer2_cfg_extend = { .activation_source =
 #endif
 		};
 
-const transfer_cfg_t g_transfer2_cfg = {
+const transfer_cfg_t g_transfer0_cfg = {
 #if BSP_CFG_DCACHE_ENABLED
     #if (1 > 0)
-        .p_info              = g_transfer2_info_fsp_nocache,
+        .p_info              = g_transfer0_info_fsp_nocache,
     #else
         .p_info = NULL,
     #endif
 #else
 #if (1 == 1)
-		.p_info = &g_transfer2_info,
+		.p_info = &g_transfer0_info,
 #elif (1 > 1)
-        .p_info              = g_transfer2_info,
+        .p_info              = g_transfer0_info,
     #else
         .p_info = NULL,
     #endif
 #endif
-		.p_extend = &g_transfer2_cfg_extend, };
+		.p_extend = &g_transfer0_cfg_extend, };
 
 /* Instance structure to use this module. */
-const transfer_instance_t g_transfer2 = { .p_ctrl = &g_transfer2_ctrl, .p_cfg =
-		&g_transfer2_cfg, .p_api = &g_transfer_on_dtc };
+const transfer_instance_t g_transfer0 = { .p_ctrl = &g_transfer0_ctrl, .p_cfg =
+		&g_transfer0_cfg, .p_api = &g_transfer_on_dtc };
 iic_master_instance_ctrl_t g_i2c_master0_ctrl;
 const iic_master_extended_cfg_t g_i2c_master0_extend =
 		{ .timeout_mode = IIC_MASTER_TIMEOUT_MODE_SHORT, .timeout_scl_low =
@@ -568,15 +568,15 @@ const i2c_master_cfg_t g_i2c_master0_cfg = { .channel = 0, .rate =
 		I2C_MASTER_RATE_STANDARD, .slave = 0x00, .addr_mode =
 		I2C_MASTER_ADDR_MODE_7BIT,
 #define RA_NOT_DEFINED (1)
-#if (RA_NOT_DEFINED == g_transfer2)
+#if (RA_NOT_DEFINED == g_transfer0)
                 .p_transfer_tx       = NULL,
 #else
-		.p_transfer_tx = &g_transfer2,
+		.p_transfer_tx = &g_transfer0,
 #endif
-#if (RA_NOT_DEFINED == g_transfer3)
+#if (RA_NOT_DEFINED == g_transfer1)
                 .p_transfer_rx       = NULL,
 #else
-		.p_transfer_rx = &g_transfer3,
+		.p_transfer_rx = &g_transfer1,
 #endif
 #undef RA_NOT_DEFINED
 		.p_callback = imu_i2c0_callback, .p_context = NULL,

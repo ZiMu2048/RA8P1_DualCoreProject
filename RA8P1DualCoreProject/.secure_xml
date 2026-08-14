@@ -144,17 +144,48 @@
   </raClockConfiguration>
   <raPinConfiguration>
     <pincfg active="true" name="" symbol="">
+      <configSetting altId="irq.irq19.p705" configurationId="irq.irq19" peripheral="IRQ"/>
       <configSetting altId="jtag_fslash_swd.tck.p211" configurationId="jtag_fslash_swd.tck" peripheral="JTAG/SWD"/>
       <configSetting altId="jtag_fslash_swd.tdi.p208" configurationId="jtag_fslash_swd.tdi" peripheral="JTAG/SWD"/>
       <configSetting altId="jtag_fslash_swd.tdo.p209" configurationId="jtag_fslash_swd.tdo" peripheral="JTAG/SWD"/>
       <configSetting altId="jtag_fslash_swd.tms.p210" configurationId="jtag_fslash_swd.tms" peripheral="JTAG/SWD"/>
+      <configSetting altId="p100.gpio_speed.gpio_speed_m" configurationId="p100.gpio_drivecapacity"/>
+      <configSetting altId="p100.gpio_mode.gpio_mode_peripheral" configurationId="p100.gpio_mode"/>
+      <configSetting altId="p101.gpio_speed.gpio_speed_m" configurationId="p101.gpio_drivecapacity"/>
+      <configSetting altId="p101.gpio_mode.gpio_mode_peripheral" configurationId="p101.gpio_mode"/>
+      <configSetting altId="p102.gpio_mode.gpio_mode_peripheral" configurationId="p102.gpio_mode"/>
+      <configSetting altId="p103.gpio_speed.gpio_speed_m" configurationId="p103.gpio_drivecapacity"/>
+      <configSetting altId="p103.gpio_mode.gpio_mode_peripheral" configurationId="p103.gpio_mode"/>
+      <configSetting altId="p104.output.low" configurationId="p104"/>
+      <configSetting altId="p104.gpio_speed.gpio_speed_h" configurationId="p104.gpio_drivecapacity"/>
+      <configSetting altId="p104.gpio_mode.gpio_mode_out.low" configurationId="p104.gpio_mode"/>
       <configSetting altId="p208.gpio_mode.gpio_mode_peripheral" configurationId="p208.gpio_mode"/>
       <configSetting altId="p209.gpio_mode.gpio_mode_peripheral" configurationId="p209.gpio_mode"/>
       <configSetting altId="p210.gpio_mode.gpio_mode_peripheral" configurationId="p210.gpio_mode"/>
       <configSetting altId="p211.gpio_mode.gpio_mode_peripheral" configurationId="p211.gpio_mode"/>
+      <configSetting altId="p700.gpio_speed.gpio_speed_m" configurationId="p700.gpio_drivecapacity"/>
+      <configSetting altId="p700.gpio_mode.gpio_mode_peripheral" configurationId="p700.gpio_mode"/>
+      <configSetting altId="p701.gpio_speed.gpio_speed_m" configurationId="p701.gpio_drivecapacity"/>
+      <configSetting altId="p701.gpio_mode.gpio_mode_peripheral" configurationId="p701.gpio_mode"/>
+      <configSetting altId="p702.gpio_mode.gpio_mode_peripheral" configurationId="p702.gpio_mode"/>
+      <configSetting altId="p703.gpio_speed.gpio_speed_m" configurationId="p703.gpio_drivecapacity"/>
+      <configSetting altId="p703.gpio_mode.gpio_mode_peripheral" configurationId="p703.gpio_mode"/>
+      <configSetting altId="p704.output.low" configurationId="p704"/>
+      <configSetting altId="p704.gpio_speed.gpio_speed_h" configurationId="p704.gpio_drivecapacity"/>
+      <configSetting altId="p704.gpio_mode.gpio_mode_out.low" configurationId="p704.gpio_mode"/>
+      <configSetting altId="p705.gpio_irq.gpio_irq_enabled" configurationId="p705.gpio_irq"/>
+      <configSetting altId="p705.gpio_mode.gpio_mode_irq" configurationId="p705.gpio_mode"/>
       <configSetting altId="p709.output.high" configurationId="p709"/>
       <configSetting altId="p709.gpio_speed.gpio_speed_h" configurationId="p709.gpio_drivecapacity"/>
       <configSetting altId="p709.gpio_mode.gpio_mode_out.high" configurationId="p709.gpio_mode"/>
+      <configSetting altId="spi0.miso0.p700" configurationId="spi0.miso0" peripheral="SPI0"/>
+      <configSetting altId="spi0.mosi0.p701" configurationId="spi0.mosi0" peripheral="SPI0"/>
+      <configSetting altId="spi0.rspck0.p702" configurationId="spi0.rspck0" peripheral="SPI0"/>
+      <configSetting altId="spi0.ssla0.p703" configurationId="spi0.ssla0" peripheral="SPI0"/>
+      <configSetting altId="spi1.miso1.p100" configurationId="spi1.miso1" peripheral="SPI1"/>
+      <configSetting altId="spi1.mosi1.p101" configurationId="spi1.mosi1" peripheral="SPI1"/>
+      <configSetting altId="spi1.rspck1.p102" configurationId="spi1.rspck1" peripheral="SPI1"/>
+      <configSetting altId="spi1.sslb0.p103" configurationId="spi1.sslb0" peripheral="SPI1"/>
     </pincfg>
   </raPinConfiguration>
   <raSmartBundles>

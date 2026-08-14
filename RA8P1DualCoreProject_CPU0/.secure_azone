@@ -112,6 +112,7 @@
             <slot name="P101.CPU0" secure="true"/>
             <slot name="P102.CPU0" secure="true"/>
             <slot name="P103.CPU0" secure="true"/>
+            <slot name="P104.CPU0" secure="true"/>
             <slot name="P112.CPU0" secure="true"/>
             <slot name="P113.CPU0" secure="true"/>
             <slot name="P114.CPU0" secure="true"/>
@@ -173,6 +174,8 @@
             <slot name="P701.CPU0" secure="true"/>
             <slot name="P702.CPU0" secure="true"/>
             <slot name="P703.CPU0" secure="true"/>
+            <slot name="P704.CPU0" secure="true"/>
+            <slot name="P705.CPU0" secure="true"/>
             <slot name="P707.CPU0" secure="true"/>
             <slot name="P709.CPU0" secure="true"/>
             <slot name="P711.CPU0" secure="true"/>

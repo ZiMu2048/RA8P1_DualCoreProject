@@ -1,4 +1,5 @@
 #include "Radio/application/command_radio.h"
+#include "SEGGER_RTT/bsp_print.h"
 
 #include "Radio/platform/fsp_nrf24_port.h"
 #include "Radio/protocol/control_protocol.h"
@@ -135,8 +136,13 @@ nrf24_result_t CommandRadio_Init(void)
     }
 
     result = Nrf24_TestConnection(&g_transport, &connected);
-    if ((NRF24_RESULT_SUCCESS != result) || !connected)
+    if (NRF24_RESULT_SUCCESS != result)
     {
+        return result;
+    }
+    if (!connected)
+    {
+        g_printf("[CMD NRF] register-loopback mismatch\r\n");
         return NRF24_RESULT_TRANSPORT_ERROR;
     }
 

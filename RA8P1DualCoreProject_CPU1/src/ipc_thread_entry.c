@@ -1,4 +1,5 @@
 #include "ipc_thread.h"
+#include "app_runtime.h"
 #include "IPC/shared_jpeg_cpu1.h"
 #include "WifiUpload/wifi_upload_mailbox.h"
 #include "Radio/adapters/rtos/video_frame_mailbox.h"
@@ -41,6 +42,12 @@ void ipc_thread_entry(void * pvParameters)
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
+    if(!app_runtime_init())
+    {
+        g_printf("[SYSTEM][FATAL] IPC runtime initialization failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
     if(!wifi_upload_mailbox_init())
     {
         g_printf("[SHM1][FATAL] Wi-Fi upload queue init failed.\r\n");
@@ -57,6 +64,9 @@ void ipc_thread_entry(void * pvParameters)
     g_printf("[SHM1] CPU1 ready: base=0x%08X capacity=%u.\r\n",
              (unsigned int) SHARED_JPEG_BASE_ADDRESS,
              (unsigned int) SHARED_JPEG_PAYLOAD_CAPACITY);
+
+    /* IPC callback and shared-memory receiver are ready before business dispatch opens. */
+    app_runtime_wait_for_start();
 
     for(;;)
     {

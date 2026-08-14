@@ -6,7 +6,6 @@
 #include <stddef.h>
 #include <string.h>
 
-#define VEHICLE_DEFAULT_SUCTION_PERCENT       (80U)
 #define VEHICLE_SUCTION_STARTUP_TIME_MS       (2000U)
 #define VEHICLE_AUTO_STRAIGHT_TIME_MS         (5000U)
 #define VEHICLE_AUTO_STRAIGHT_PERCENT         (40U)
@@ -139,13 +138,13 @@ vehicle_result_t vehicle_service_init(vehicle_dependencies_t const * dependencie
     wheels_stop();
     if (!g_vehicle.dependencies.actuators.write_suction(
             g_vehicle.dependencies.actuators.context,
-            percent_to_duty(VEHICLE_DEFAULT_SUCTION_PERCENT)))
+            0.0F))
     {
         return set_error(VEHICLE_RESULT_IO_ERROR);
     }
 
-    /* 风机建立吸附力期间不阻塞线程，step() 继续执行并可响应急停。 */
-    g_vehicle.status.suction_duty = percent_to_duty(VEHICLE_DEFAULT_SUCTION_PERCENT);
+    /* 启动门禁释放前保持车轮和吸附输出为零，业务命令放行后再显式启动吸附。 */
+    g_vehicle.status.suction_duty = 0.0F;
     g_vehicle.status.suction_ready = false;
     g_vehicle.status.initialized = true;
     return set_error(VEHICLE_RESULT_OK);

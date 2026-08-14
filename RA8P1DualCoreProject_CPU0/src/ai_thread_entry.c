@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define AI_CONFIDENCE_THRESHOLD       (0.40f) /*最低检测置信度阈值*/
+#define AI_CONFIDENCE_THRESHOLD       (0.50f) /*最低检测置信度阈值*/
 #define AI_NMS_IOU_THRESHOLD          (0.45f)
 #define AI_JPEG_CLEAR_FRAME_COUNT     (10U)
 

@@ -282,8 +282,8 @@
       <property id="config.bsp.option_setting_otp.zhuk.zhuken3" value="config.bsp.option_setting_otp.zhuk.zhuken3.disabled"/>
     </config>
     <config id="config.bsp.ra">
-      <property id="config.bsp.common.main" value="0x400"/>
-      <property id="config.bsp.common.heap" value="0"/>
+      <property id="config.bsp.common.main" value="0x800"/>
+      <property id="config.bsp.common.heap" value="0x800"/>
       <property id="config.bsp.common.bootloader.xip_enable" value="config.bsp.common.bootloader.xip_enable.disabled"/>
       <property id="config.bsp.common.vcc" value="3300"/>
       <property id="config.bsp.common.checking" value="config.bsp.common.checking.disabled"/>
@@ -410,32 +410,6 @@
       <property id="module.driver.i2c_master.p_callback" value="imu_i2c0_callback"/>
       <property id="module.driver.i2c_master.ipl" value="board.icu.common.irq.priority12"/>
     </module>
-    <module id="module.driver.transfer_on_dtc.43696159">
-      <property id="module.driver.transfer.name" value="g_transfer2"/>
-      <property id="module.driver.transfer.mode" value="module.driver.transfer.mode.mode_normal"/>
-      <property id="module.driver.transfer.size" value="module.driver.transfer.size.size_2_byte"/>
-      <property id="module.driver.transfer.dest_addr_mode" value="module.driver.transfer.dest_addr_mode.addr_mode_fixed"/>
-      <property id="module.driver.transfer.src_addr_mode" value="module.driver.transfer.src_addr_mode.addr_mode_fixed"/>
-      <property id="module.driver.transfer.repeat_area" value="module.driver.transfer.repeat_area.repeat_area_source"/>
-      <property id="module.driver.transfer.interrupt" value="module.driver.transfer.interrupt.interrupt_end"/>
-      <property id="module.driver.transfer.length" value="0"/>
-      <property id="module.driver.transfer.num_blocks" value="0"/>
-      <property id="module.driver.transfer.number_of_descriptors" value="1"/>
-      <property id="module.driver.transfer.activation_source" value="_disabled"/>
-    </module>
-    <module id="module.driver.transfer_on_dtc.1518036227">
-      <property id="module.driver.transfer.name" value="g_transfer3"/>
-      <property id="module.driver.transfer.mode" value="module.driver.transfer.mode.mode_normal"/>
-      <property id="module.driver.transfer.size" value="module.driver.transfer.size.size_2_byte"/>
-      <property id="module.driver.transfer.dest_addr_mode" value="module.driver.transfer.dest_addr_mode.addr_mode_fixed"/>
-      <property id="module.driver.transfer.src_addr_mode" value="module.driver.transfer.src_addr_mode.addr_mode_fixed"/>
-      <property id="module.driver.transfer.repeat_area" value="module.driver.transfer.repeat_area.repeat_area_source"/>
-      <property id="module.driver.transfer.interrupt" value="module.driver.transfer.interrupt.interrupt_end"/>
-      <property id="module.driver.transfer.length" value="0"/>
-      <property id="module.driver.transfer.num_blocks" value="0"/>
-      <property id="module.driver.transfer.number_of_descriptors" value="1"/>
-      <property id="module.driver.transfer.activation_source" value="_disabled"/>
-    </module>
     <module id="module.driver.spi_on_spi_b.1437547274">
       <property id="module.driver.spi_b.name" value="g_spi0"/>
       <property id="module.driver.spi_b.channel" value="0"/>
@@ -449,7 +423,7 @@
       <property id="module.driver.spi_b.mode_fault" value="module.driver.spi_b.mode_fault.mode_fault_error_disable"/>
       <property id="module.driver.spi_b.bit_order" value="module.driver.spi_b.bit_order.bit_order_msb_first"/>
       <property id="module.driver.spi_b.p_callback" value="nrf24_command_spi_callback"/>
-      <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_clksyn"/>
+      <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_operation"/>
       <property id="module.driver.spi_b.spi_burst_transfer_without_delay" value="module.driver.spi_b.spi_burst_transfer_without_delay.disable"/>
       <property id="module.driver.spi_b.spi_comm" value="module.driver.spi_b.spi_comm.full_duplex"/>
       <property id="module.driver.spi_b.ssl_polarity" value="module.driver.spi_b.ssl_polarity.low"/>
@@ -476,7 +450,7 @@
       <property id="module.driver.spi_b.mode_fault" value="module.driver.spi_b.mode_fault.mode_fault_error_disable"/>
       <property id="module.driver.spi_b.bit_order" value="module.driver.spi_b.bit_order.bit_order_msb_first"/>
       <property id="module.driver.spi_b.p_callback" value="nrf24_video_spi_callback"/>
-      <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_clksyn"/>
+      <property id="module.driver.spi_b.spi_clksyn" value="module.driver.spi_b.spi_clksyn.spi_operation"/>
       <property id="module.driver.spi_b.spi_burst_transfer_without_delay" value="module.driver.spi_b.spi_burst_transfer_without_delay.disable"/>
       <property id="module.driver.spi_b.spi_comm" value="module.driver.spi_b.spi_comm.full_duplex"/>
       <property id="module.driver.spi_b.ssl_polarity" value="module.driver.spi_b.ssl_polarity.low"/>
@@ -737,6 +711,32 @@
       <property id="module.driver.external_irq.p_callback" value="nrf24_command_irq_callback"/>
       <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
     </module>
+    <module id="module.driver.transfer_on_dtc.1819412817">
+      <property id="module.driver.transfer.name" value="g_transfer0"/>
+      <property id="module.driver.transfer.mode" value="module.driver.transfer.mode.mode_normal"/>
+      <property id="module.driver.transfer.size" value="module.driver.transfer.size.size_2_byte"/>
+      <property id="module.driver.transfer.dest_addr_mode" value="module.driver.transfer.dest_addr_mode.addr_mode_fixed"/>
+      <property id="module.driver.transfer.src_addr_mode" value="module.driver.transfer.src_addr_mode.addr_mode_fixed"/>
+      <property id="module.driver.transfer.repeat_area" value="module.driver.transfer.repeat_area.repeat_area_source"/>
+      <property id="module.driver.transfer.interrupt" value="module.driver.transfer.interrupt.interrupt_end"/>
+      <property id="module.driver.transfer.length" value="0"/>
+      <property id="module.driver.transfer.num_blocks" value="0"/>
+      <property id="module.driver.transfer.number_of_descriptors" value="1"/>
+      <property id="module.driver.transfer.activation_source" value="_disabled"/>
+    </module>
+    <module id="module.driver.transfer_on_dtc.243021253">
+      <property id="module.driver.transfer.name" value="g_transfer1"/>
+      <property id="module.driver.transfer.mode" value="module.driver.transfer.mode.mode_normal"/>
+      <property id="module.driver.transfer.size" value="module.driver.transfer.size.size_2_byte"/>
+      <property id="module.driver.transfer.dest_addr_mode" value="module.driver.transfer.dest_addr_mode.addr_mode_fixed"/>
+      <property id="module.driver.transfer.src_addr_mode" value="module.driver.transfer.src_addr_mode.addr_mode_fixed"/>
+      <property id="module.driver.transfer.repeat_area" value="module.driver.transfer.repeat_area.repeat_area_source"/>
+      <property id="module.driver.transfer.interrupt" value="module.driver.transfer.interrupt.interrupt_end"/>
+      <property id="module.driver.transfer.length" value="0"/>
+      <property id="module.driver.transfer.num_blocks" value="0"/>
+      <property id="module.driver.transfer.number_of_descriptors" value="1"/>
+      <property id="module.driver.transfer.activation_source" value="_disabled"/>
+    </module>
     <context id="_hal.0">
       <stack module="module.driver.ioport_on_ioport.0"/>
       <stack module="module.middleware.rm_freertos_port.0"/>
@@ -751,8 +751,8 @@
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
       <stack module="module.driver.i2c_on_iic_master.85378304">
-        <stack module="module.driver.transfer_on_dtc.43696159" requires="module.driver.i2c_on_iic_master.requires.transfer_tx"/>
-        <stack module="module.driver.transfer_on_dtc.1518036227" requires="module.driver.i2c_on_iic_master.requires.transfer_rx"/>
+        <stack module="module.driver.transfer_on_dtc.1819412817" requires="module.driver.i2c_on_iic_master.requires.transfer_tx"/>
+        <stack module="module.driver.transfer_on_dtc.243021253" requires="module.driver.i2c_on_iic_master.requires.transfer_rx"/>
       </stack>
       <stack module="module.driver.timer_on_gpt.66547312"/>
       <stack module="module.driver.timer_on_gpt.1115790638"/>
@@ -917,100 +917,28 @@
     <symbolicName propertyId="p704.symbolic_name" value="NRF_COMMAND_CE"/>
     <symbolicName propertyId="p705.symbolic_name" value="NRF_COMMAND_IRQ"/>
     <pincfg active="true" name="R7KA8P1KFLCAC.pincfg" selected="true" symbol="g_bsp_pin_cfg">
-      <configSetting altId="gpt6.gtioc6a.p400" configurationId="gpt6.gtioc6a"/>
-      <configSetting altId="gpt6.gtioc6b.p401" configurationId="gpt6.gtioc6b"/>
       <configSetting altId="gpt6.mode.gtiocaandgtiocb.free" configurationId="gpt6.mode"/>
-      <configSetting altId="gpt7.gtioc7a.p304" configurationId="gpt7.gtioc7a"/>
-      <configSetting altId="gpt7.gtioc7b.p303" configurationId="gpt7.gtioc7b"/>
       <configSetting altId="gpt7.mode.gtiocaandgtiocb.free" configurationId="gpt7.mode"/>
-      <configSetting altId="gpt8.gtioc8a.p605" configurationId="gpt8.gtioc8a"/>
-      <configSetting altId="gpt8.gtioc8b.p604" configurationId="gpt8.gtioc8b"/>
       <configSetting altId="gpt8.mode.gtiocaandgtiocb.free" configurationId="gpt8.mode"/>
       <configSetting altId="iic0.mode.custom.free" configurationId="iic0.mode"/>
-      <configSetting altId="iic0.scl0.p410" configurationId="iic0.scl0"/>
-      <configSetting altId="iic0.sda0.p409" configurationId="iic0.sda0"/>
-      <configSetting altId="irq.irq19.p705" configurationId="irq.irq19"/>
       <configSetting altId="irq.mode.custom.free" configurationId="irq.mode"/>
       <configSetting altId="jtag_fslash_swd.mode.jtag.free" configurationId="jtag_fslash_swd.mode"/>
-      <configSetting altId="p100.spi1.miso1" configurationId="p100"/>
-      <configSetting altId="p100.gpio_speed.gpio_speed_m" configurationId="p100.gpio_drivecapacity"/>
-      <configSetting altId="p100.gpio_mode.gpio_mode_peripheral" configurationId="p100.gpio_mode"/>
-      <configSetting altId="p101.spi1.mosi1" configurationId="p101"/>
-      <configSetting altId="p101.gpio_speed.gpio_speed_m" configurationId="p101.gpio_drivecapacity"/>
-      <configSetting altId="p101.gpio_mode.gpio_mode_peripheral" configurationId="p101.gpio_mode"/>
-      <configSetting altId="p102.spi1.rspck1" configurationId="p102"/>
-      <configSetting altId="p102.gpio_mode.gpio_mode_peripheral" configurationId="p102.gpio_mode"/>
-      <configSetting altId="p103.spi1.sslb0" configurationId="p103"/>
-      <configSetting altId="p103.gpio_speed.gpio_speed_m" configurationId="p103.gpio_drivecapacity"/>
-      <configSetting altId="p103.gpio_mode.gpio_mode_peripheral" configurationId="p103.gpio_mode"/>
-      <configSetting altId="p104.gpio_mode.gpio_mode_out.low" configurationId="p104.gpio_mode"/>
-      <configSetting altId="p303.gpt7.gtioc7b" configurationId="p303"/>
-      <configSetting altId="p303.gpio_mode.gpio_mode_peripheral" configurationId="p303.gpio_mode"/>
-      <configSetting altId="p304.gpt7.gtioc7a" configurationId="p304"/>
-      <configSetting altId="p304.gpio_mode.gpio_mode_peripheral" configurationId="p304.gpio_mode"/>
-      <configSetting altId="p400.gpt6.gtioc6a" configurationId="p400"/>
-      <configSetting altId="p400.gpio_mode.gpio_mode_peripheral" configurationId="p400.gpio_mode"/>
-      <configSetting altId="p401.gpt6.gtioc6b" configurationId="p401"/>
-      <configSetting altId="p401.gpio_mode.gpio_mode_peripheral" configurationId="p401.gpio_mode"/>
-      <configSetting altId="p409.iic0.sda0" configurationId="p409"/>
-      <configSetting altId="p409.gpio_speed.gpio_speed_m" configurationId="p409.gpio_drivecapacity"/>
-      <configSetting altId="p409.gpio_mode.gpio_mode_peripheral" configurationId="p409.gpio_mode"/>
-      <configSetting altId="p410.iic0.scl0" configurationId="p410"/>
-      <configSetting altId="p410.gpio_speed.gpio_speed_m" configurationId="p410.gpio_drivecapacity"/>
-      <configSetting altId="p410.gpio_mode.gpio_mode_peripheral" configurationId="p410.gpio_mode"/>
       <configSetting altId="p602.sci0.rxd0" configurationId="p602"/>
       <configSetting altId="p602.gpio_mode.gpio_mode_peripheral" configurationId="p602.gpio_mode"/>
       <configSetting altId="p603.sci0.txd0" configurationId="p603"/>
       <configSetting altId="p603.gpio_mode.gpio_mode_peripheral" configurationId="p603.gpio_mode"/>
-      <configSetting altId="p604.gpt8.gtioc8b" configurationId="p604"/>
-      <configSetting altId="p604.gpio_mode.gpio_mode_peripheral" configurationId="p604.gpio_mode"/>
-      <configSetting altId="p605.gpt8.gtioc8a" configurationId="p605"/>
-      <configSetting altId="p605.gpio_mode.gpio_mode_peripheral" configurationId="p605.gpio_mode"/>
-      <configSetting altId="p700.spi0.miso0" configurationId="p700"/>
-      <configSetting altId="p700.gpio_speed.gpio_speed_m" configurationId="p700.gpio_drivecapacity"/>
-      <configSetting altId="p700.gpio_mode.gpio_mode_peripheral" configurationId="p700.gpio_mode"/>
-      <configSetting altId="p701.spi0.mosi0" configurationId="p701"/>
-      <configSetting altId="p701.gpio_speed.gpio_speed_m" configurationId="p701.gpio_drivecapacity"/>
-      <configSetting altId="p701.gpio_mode.gpio_mode_peripheral" configurationId="p701.gpio_mode"/>
-      <configSetting altId="p702.spi0.rspck0" configurationId="p702"/>
-      <configSetting altId="p702.gpio_mode.gpio_mode_peripheral" configurationId="p702.gpio_mode"/>
-      <configSetting altId="p703.spi0.ssla0" configurationId="p703"/>
-      <configSetting altId="p703.gpio_speed.gpio_speed_m" configurationId="p703.gpio_drivecapacity"/>
-      <configSetting altId="p703.gpio_mode.gpio_mode_peripheral" configurationId="p703.gpio_mode"/>
-      <configSetting altId="p704.gpio_mode.gpio_mode_out.low" configurationId="p704.gpio_mode"/>
-      <configSetting altId="p705.irq.irq19" configurationId="p705"/>
-      <configSetting altId="p705.gpio_irq.gpio_irq_enabled" configurationId="p705.gpio_irq"/>
-      <configSetting altId="p705.gpio_mode.gpio_mode_irq" configurationId="p705.gpio_mode"/>
-      <configSetting altId="p705.gpio_pupd.gpio_pupd_ip_up" configurationId="p705.gpio_pupd"/>
       <configSetting altId="p810.gpt10.gtioc10a" configurationId="p810"/>
       <configSetting altId="p810.gpio_mode.gpio_mode_peripheral" configurationId="p810.gpio_mode"/>
       <configSetting altId="p811.gpt10.gtioc10b" configurationId="p811"/>
       <configSetting altId="p811.gpio_mode.gpio_mode_peripheral" configurationId="p811.gpio_mode"/>
       <configSetting altId="sci0.rxd0.p602" configurationId="sci0.rxd0"/>
       <configSetting altId="sci0.txd0.p603" configurationId="sci0.txd0"/>
-      <configSetting altId="spi0.miso0.p700" configurationId="spi0.miso0"/>
       <configSetting altId="spi0.mode.custom.free" configurationId="spi0.mode"/>
-      <configSetting altId="spi0.mosi0.p701" configurationId="spi0.mosi0"/>
-      <configSetting altId="spi0.rspck0.p702" configurationId="spi0.rspck0"/>
-      <configSetting altId="spi0.ssla0.p703" configurationId="spi0.ssla0"/>
-      <configSetting altId="spi1.miso1.p100" configurationId="spi1.miso1"/>
       <configSetting altId="spi1.mode.custom.free" configurationId="spi1.mode"/>
-      <configSetting altId="spi1.mosi1.p101" configurationId="spi1.mosi1"/>
-      <configSetting altId="spi1.rspck1.p102" configurationId="spi1.rspck1"/>
-      <configSetting altId="spi1.sslb0.p103" configurationId="spi1.sslb0"/>
       <lockSetting id="gpt10.gtioc10a" lock="true"/>
       <lockSetting id="gpt10.gtioc10b" lock="true"/>
       <lockSetting id="gpt12.gtioc12a" lock="true"/>
       <lockSetting id="gpt12.gtioc12b" lock="true"/>
-      <lockSetting id="gpt6.gtioc6a" lock="true"/>
-      <lockSetting id="gpt6.gtioc6b" lock="true"/>
-      <lockSetting id="gpt7.gtioc7a" lock="true"/>
-      <lockSetting id="gpt7.gtioc7b" lock="true"/>
-      <lockSetting id="gpt8.gtioc8a" lock="true"/>
-      <lockSetting id="gpt8.gtioc8b" lock="true"/>
-      <lockSetting id="iic0.scl0" lock="true"/>
-      <lockSetting id="iic0.sda0" lock="true"/>
-      <lockSetting id="irq.irq19" lock="true"/>
       <lockSetting id="sci0.rxd0" lock="true"/>
       <lockSetting id="sci0.txd0" lock="true"/>
       <lockSetting id="spi0.miso0" lock="true"/>

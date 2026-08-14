@@ -1,4 +1,5 @@
 #include <vehicle_thread.h>
+#include "app_runtime.h"
 #include "Vehicle/adapters/rtos/vehicle_command_mailbox.h"
 #include "Vehicle/application/vehicle_service.h"
 #include "Vehicle/platform/fsp_vehicle_factory.h"
@@ -6,6 +7,7 @@
 
 #define VEHICLE_CONTROL_PERIOD_MS        (10U)
 #define VEHICLE_COMMAND_TIMEOUT_MS       (200U)
+#define VEHICLE_STARTUP_SUCTION_PERCENT  (80U)
 
 /*
  * 车轮直行验证开关：
@@ -86,6 +88,12 @@ void vehicle_thread_entry(void * pvParameters)
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
+    if(!app_runtime_init())
+    {
+        g_printf("[SYSTEM][FATAL] runtime EventGroup/timer initialization failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
     if(!vehicle_command_mailbox_init())
     {
         vehicle_service_emergency_stop();
@@ -108,6 +116,22 @@ void vehicle_thread_entry(void * pvParameters)
                  (unsigned int) init_result);
         vTaskSuspend(NULL);
     }
+
+    g_printf("[VEHICLE] safe outputs established; waiting for startup gate.\r\n");
+    app_runtime_wait_for_start();
+    g_printf("[VEHICLE] startup gate released.\r\n");
+
+    init_result = vehicle_service_suction_set(true,
+                                              VEHICLE_STARTUP_SUCTION_PERCENT);
+    if(VEHICLE_RESULT_OK != init_result)
+    {
+        vehicle_service_emergency_stop();
+        g_printf("[VEHICLE][FATAL] startup suction failed: %u.\r\n",
+                 (unsigned int) init_result);
+        vTaskSuspend(NULL);
+    }
+    g_printf("[VEHICLE] suction starting at %u%%.\r\n",
+             (unsigned int) VEHICLE_STARTUP_SUCTION_PERCENT);
 
     wake_tick = xTaskGetTickCount();
     last_command_tick = wake_tick;

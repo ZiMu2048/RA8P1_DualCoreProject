@@ -1,4 +1,5 @@
 #include "wifi_upload_thread.h"
+#include "app_runtime.h"
 #include "DA16200/da16200_AT.h"
 #include "IPC/shared_jpeg_cpu1.h"
 #include "WifiUpload/wifi_upload_mailbox.h"
@@ -329,11 +330,18 @@ void wifi_upload_thread_entry(void * pvParameters)
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
+    if(!app_runtime_init())
+    {
+        g_printf("[SYSTEM][FATAL] Wi-Fi runtime initialization failed.\r\n");
+        vTaskSuspend(NULL);
+    }
+
     err = DA16200_UartInit();
     if(FSP_SUCCESS != err)
     {
         g_printf("[WIFI][FATAL] DA16200 UART init failed: %u.\r\n",
                  (unsigned int) err);
+        app_runtime_allow_start_degraded();
         vTaskSuspend(NULL);
     }
 
@@ -364,6 +372,7 @@ void wifi_upload_thread_entry(void * pvParameters)
         }
 
         wifi_upload_reject_pending_job(SHARED_JPEG_ERROR_WIFI_CONNECT);
+        app_runtime_wifi_frontend_set(false);
         g_printf("[WIFI][ERR] DA16200 AT probe failed: %u; retry in %u ms.\r\n",
                  (unsigned int) err,
                  (unsigned int) WIFI_UPLOAD_RETRY_DELAY_MS);
@@ -382,6 +391,7 @@ void wifi_upload_thread_entry(void * pvParameters)
             if(FSP_SUCCESS != err)
             {
                 wifi_upload_reject_pending_job(connection_error);
+                app_runtime_wifi_frontend_set(false);
                 g_printf("[WIFI][ERR] Frontend connection failed: %u; retry in %u ms.\r\n",
                          (unsigned int) err,
                          (unsigned int) WIFI_UPLOAD_RETRY_DELAY_MS);
@@ -394,6 +404,7 @@ void wifi_upload_thread_entry(void * pvParameters)
                      WIFI_UPLOAD_SERVER_IP,
                      (unsigned int) WIFI_UPLOAD_SERVER_PORT,
                      (unsigned int) tcp_cid);
+            app_runtime_wifi_frontend_set(true);
         }
 
         if(!wifi_upload_mailbox_take(&job, portMAX_DELAY))
@@ -420,6 +431,7 @@ void wifi_upload_thread_entry(void * pvParameters)
             (void) DA16200_TcpCloseAll();
             frontend_ready = false;
             tcp_cid = 0xFFU;
+            app_runtime_wifi_frontend_set(false);
         }
     }
 }

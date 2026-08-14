@@ -45,9 +45,9 @@ void g_spi0_rx_transfer_callback (dmac_callback_args_t * p_args)
 spi_b_instance_ctrl_t g_spi0_ctrl;
 
 /** SPI extended configuration for SPI HAL driver */
-const spi_b_extended_cfg_t g_spi0_ext_cfg = { .spi_clksyn =
-		SPI_B_SSL_MODE_CLK_SYN, .spi_comm = SPI_B_COMMUNICATION_FULL_DUPLEX,
-		.ssl_polarity = SPI_B_SSLP_LOW, .ssl_select = SPI_B_SSL_SELECT_SSL0,
+const spi_b_extended_cfg_t g_spi0_ext_cfg = { .spi_clksyn = SPI_B_SSL_MODE_SPI,
+		.spi_comm = SPI_B_COMMUNICATION_FULL_DUPLEX, .ssl_polarity =
+				SPI_B_SSLP_LOW, .ssl_select = SPI_B_SSL_SELECT_SSL0,
 		.mosi_idle = SPI_B_MOSI_IDLE_VALUE_FIXING_DISABLE, .parity =
 				SPI_B_PARITY_MODE_DISABLE, .byte_swap = SPI_B_BYTE_SWAP_DISABLE,
 		.clock_source = SPI_B_CLOCK_SOURCE_PCLK, .spck_div = {

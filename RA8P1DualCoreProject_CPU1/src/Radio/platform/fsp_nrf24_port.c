@@ -6,6 +6,7 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
+#include "SEGGER_RTT/bsp_print.h"
 
 #define NRF24_SPI_TIMEOUT_MS       (10U)
 #define NRF24_POWER_UP_DELAY_MS    (100U)
@@ -68,17 +69,30 @@ static nrf24_result_t transfer(void * p_context,
                                                      SPI_BIT_WIDTH_8_BITS);
     if (FSP_SUCCESS != err)
     {
+        g_printf("[NRF PORT%u] spi-start failed fsp=%u\r\n",
+                 (uint32_t) (p_port - &g_ports[0]),
+                 (uint32_t) err);
         return NRF24_RESULT_TRANSPORT_ERROR;
     }
 
     if (pdTRUE != xSemaphoreTake(p_port->transfer_done,
                                  pdMS_TO_TICKS(NRF24_SPI_TIMEOUT_MS)))
     {
+        g_printf("[NRF PORT%u] spi-timeout after %u ms\r\n",
+                 (uint32_t) (p_port - &g_ports[0]),
+                 NRF24_SPI_TIMEOUT_MS);
         return NRF24_RESULT_TIMEOUT;
     }
 
-    return (SPI_EVENT_TRANSFER_COMPLETE == p_port->transfer_event) ?
-           NRF24_RESULT_SUCCESS : NRF24_RESULT_TRANSPORT_ERROR;
+    if (SPI_EVENT_TRANSFER_COMPLETE != p_port->transfer_event)
+    {
+        g_printf("[NRF PORT%u] spi-event=%u\r\n",
+                 (uint32_t) (p_port - &g_ports[0]),
+                 (uint32_t) p_port->transfer_event);
+        return NRF24_RESULT_TRANSPORT_ERROR;
+    }
+
+    return NRF24_RESULT_SUCCESS;
 }
 
 static nrf24_result_t ce_write(void * p_context, bool high)
@@ -148,11 +162,24 @@ nrf24_result_t FspNrf24Port_Open(nrf24_port_id_t port_id,
             return NRF24_RESULT_TRANSPORT_ERROR;
         }
 
-        (void) R_IOPORT_PinWrite(&g_ioport_ctrl, p_port->ce_pin, BSP_IO_LEVEL_LOW);
-        fsp_err_t err = p_port->p_spi->p_api->open(p_port->p_spi->p_ctrl,
-                                                   p_port->p_spi->p_cfg);
+        fsp_err_t err = R_IOPORT_PinWrite(&g_ioport_ctrl,
+                                          p_port->ce_pin,
+                                          BSP_IO_LEVEL_LOW);
+        if (FSP_SUCCESS != err)
+        {
+            g_printf("[NRF PORT%u] ce-low failed fsp=%u\r\n",
+                     (uint32_t) port_id,
+                     (uint32_t) err);
+            return NRF24_RESULT_TRANSPORT_ERROR;
+        }
+
+        err = p_port->p_spi->p_api->open(p_port->p_spi->p_ctrl,
+                                         p_port->p_spi->p_cfg);
         if ((FSP_SUCCESS != err) && (FSP_ERR_ALREADY_OPEN != err))
         {
+            g_printf("[NRF PORT%u] spi-open failed fsp=%u\r\n",
+                     (uint32_t) port_id,
+                     (uint32_t) err);
             return NRF24_RESULT_TRANSPORT_ERROR;
         }
 
@@ -168,11 +195,17 @@ nrf24_result_t FspNrf24Port_Open(nrf24_port_id_t port_id,
                                                 g_external_irq19.p_cfg);
             if ((FSP_SUCCESS != err) && (FSP_ERR_ALREADY_OPEN != err))
             {
+                g_printf("[NRF PORT%u] irq-open failed fsp=%u\r\n",
+                         (uint32_t) port_id,
+                         (uint32_t) err);
                 return NRF24_RESULT_TRANSPORT_ERROR;
             }
             err = g_external_irq19.p_api->enable(g_external_irq19.p_ctrl);
             if (FSP_SUCCESS != err)
             {
+                g_printf("[NRF PORT%u] irq-enable failed fsp=%u\r\n",
+                         (uint32_t) port_id,
+                         (uint32_t) err);
                 return NRF24_RESULT_TRANSPORT_ERROR;
             }
         }

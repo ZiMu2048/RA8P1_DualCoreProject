@@ -49,17 +49,17 @@ extern const timer_cfg_t g_left_wheel_cfg;
 void NULL(timer_callback_args_t *p_args);
 #endif
 /* Transfer on DTC Instance. */
-extern const transfer_instance_t g_transfer3;
+extern const transfer_instance_t g_transfer1;
 
 /** Access the DTC instance using these structures when calling API functions directly (::p_api is not used). */
-extern dtc_instance_ctrl_t g_transfer3_ctrl;
-extern const transfer_cfg_t g_transfer3_cfg;
+extern dtc_instance_ctrl_t g_transfer1_ctrl;
+extern const transfer_cfg_t g_transfer1_cfg;
 /* Transfer on DTC Instance. */
-extern const transfer_instance_t g_transfer2;
+extern const transfer_instance_t g_transfer0;
 
 /** Access the DTC instance using these structures when calling API functions directly (::p_api is not used). */
-extern dtc_instance_ctrl_t g_transfer2_ctrl;
-extern const transfer_cfg_t g_transfer2_cfg;
+extern dtc_instance_ctrl_t g_transfer0_ctrl;
+extern const transfer_cfg_t g_transfer0_cfg;
 /* I2C Master on IIC Instance. */
 extern const i2c_master_instance_t g_i2c_master0;
 

@@ -11,10 +11,13 @@ static QueueHandle_t g_command_queue;
 
 bool vehicle_command_mailbox_init(void)
 {
-    g_command_queue = xQueueCreateStatic(1U,
-                                         sizeof(vehicle_command_t),
-                                         g_command_queue_storage,
-                                         &g_command_queue_control);
+    if(NULL == g_command_queue)
+    {
+        g_command_queue = xQueueCreateStatic(1U,
+                                             sizeof(vehicle_command_t),
+                                             g_command_queue_storage,
+                                             &g_command_queue_control);
+    }
     return NULL != g_command_queue;
 }
 
