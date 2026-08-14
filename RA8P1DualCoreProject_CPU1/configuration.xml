@@ -529,16 +529,6 @@
       <property id="module.driver.ipc.callback" value="g_ipc1_callback"/>
       <property id="module.driver.ipc.ipl" value="board.icu.common.irq.priority5"/>
     </module>
-    <module id="module.driver.external_irq_on_icu.1364594764">
-      <property id="module.driver.external_irq.name" value="g_external_irq0"/>
-      <property id="module.driver.external_irq.channel" value="19"/>
-      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_falling"/>
-      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
-      <property id="module.driver.external_irq.filter_source" value="module.driver.external_irq.filter_source.pclk"/>
-      <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
-      <property id="module.driver.external_irq.p_callback" value="nrf24_command_irq_callback"/>
-      <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
-    </module>
     <module id="module.driver.timer_on_gpt.66547312">
       <property id="module.driver.timer.name" value="g_left_wheel"/>
       <property id="module.driver.timer.channel" value="6"/>
@@ -740,11 +730,11 @@
     <module id="module.driver.external_irq_on_icu.170150182">
       <property id="module.driver.external_irq.name" value="g_external_irq19"/>
       <property id="module.driver.external_irq.channel" value="19"/>
-      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_rising"/>
-      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.false"/>
+      <property id="module.driver.external_irq.trigger" value="module.driver.external_irq.trigger.trig_falling"/>
+      <property id="module.driver.external_irq.filter_enable" value="module.driver.external_irq.filter_enable.true"/>
       <property id="module.driver.external_irq.filter_source" value="module.driver.external_irq.filter_source.pclk"/>
       <property id="module.driver.external_irq.clock_source_div" value="module.driver.external_irq.clock_source_div.clock_source_div_by_64"/>
-      <property id="module.driver.external_irq.p_callback" value="NULL"/>
+      <property id="module.driver.external_irq.p_callback" value="nrf24_command_irq_callback"/>
       <property id="module.driver.external_irq.ipl" value="board.icu.common.irq.priority12"/>
     </module>
     <context id="_hal.0">
@@ -793,7 +783,7 @@
       <property id="_symbol" value="wifi_upload_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="WIFI Upload Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="6144"/>
-      <property id="rtos.awsfreertos.thread.priority" value="4"/>
+      <property id="rtos.awsfreertos.thread.priority" value="3"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -939,7 +929,21 @@
       <configSetting altId="iic0.mode.custom.free" configurationId="iic0.mode"/>
       <configSetting altId="iic0.scl0.p410" configurationId="iic0.scl0"/>
       <configSetting altId="iic0.sda0.p409" configurationId="iic0.sda0"/>
+      <configSetting altId="irq.irq19.p705" configurationId="irq.irq19"/>
+      <configSetting altId="irq.mode.custom.free" configurationId="irq.mode"/>
       <configSetting altId="jtag_fslash_swd.mode.jtag.free" configurationId="jtag_fslash_swd.mode"/>
+      <configSetting altId="p100.spi1.miso1" configurationId="p100"/>
+      <configSetting altId="p100.gpio_speed.gpio_speed_m" configurationId="p100.gpio_drivecapacity"/>
+      <configSetting altId="p100.gpio_mode.gpio_mode_peripheral" configurationId="p100.gpio_mode"/>
+      <configSetting altId="p101.spi1.mosi1" configurationId="p101"/>
+      <configSetting altId="p101.gpio_speed.gpio_speed_m" configurationId="p101.gpio_drivecapacity"/>
+      <configSetting altId="p101.gpio_mode.gpio_mode_peripheral" configurationId="p101.gpio_mode"/>
+      <configSetting altId="p102.spi1.rspck1" configurationId="p102"/>
+      <configSetting altId="p102.gpio_mode.gpio_mode_peripheral" configurationId="p102.gpio_mode"/>
+      <configSetting altId="p103.spi1.sslb0" configurationId="p103"/>
+      <configSetting altId="p103.gpio_speed.gpio_speed_m" configurationId="p103.gpio_drivecapacity"/>
+      <configSetting altId="p103.gpio_mode.gpio_mode_peripheral" configurationId="p103.gpio_mode"/>
+      <configSetting altId="p104.gpio_mode.gpio_mode_out.low" configurationId="p104.gpio_mode"/>
       <configSetting altId="p303.gpt7.gtioc7b" configurationId="p303"/>
       <configSetting altId="p303.gpio_mode.gpio_mode_peripheral" configurationId="p303.gpio_mode"/>
       <configSetting altId="p304.gpt7.gtioc7a" configurationId="p304"/>
@@ -954,20 +958,46 @@
       <configSetting altId="p410.iic0.scl0" configurationId="p410"/>
       <configSetting altId="p410.gpio_speed.gpio_speed_m" configurationId="p410.gpio_drivecapacity"/>
       <configSetting altId="p410.gpio_mode.gpio_mode_peripheral" configurationId="p410.gpio_mode"/>
-      <configSetting altId="p604.gpt8.gtioc8b" configurationId="p604"/>
-      <configSetting altId="p604.gpio_mode.gpio_mode_peripheral" configurationId="p604.gpio_mode"/>
-      <configSetting altId="p605.gpt8.gtioc8a" configurationId="p605"/>
-      <configSetting altId="p605.gpio_mode.gpio_mode_peripheral" configurationId="p605.gpio_mode"/>
-      <configSetting altId="p810.gpt10.gtioc10a" configurationId="p810"/>
-      <configSetting altId="p810.gpio_mode.gpio_mode_peripheral" configurationId="p810.gpio_mode"/>
-      <configSetting altId="p811.gpt10.gtioc10b" configurationId="p811"/>
-      <configSetting altId="p811.gpio_mode.gpio_mode_peripheral" configurationId="p811.gpio_mode"/>
       <configSetting altId="p602.sci0.rxd0" configurationId="p602"/>
       <configSetting altId="p602.gpio_mode.gpio_mode_peripheral" configurationId="p602.gpio_mode"/>
       <configSetting altId="p603.sci0.txd0" configurationId="p603"/>
       <configSetting altId="p603.gpio_mode.gpio_mode_peripheral" configurationId="p603.gpio_mode"/>
+      <configSetting altId="p604.gpt8.gtioc8b" configurationId="p604"/>
+      <configSetting altId="p604.gpio_mode.gpio_mode_peripheral" configurationId="p604.gpio_mode"/>
+      <configSetting altId="p605.gpt8.gtioc8a" configurationId="p605"/>
+      <configSetting altId="p605.gpio_mode.gpio_mode_peripheral" configurationId="p605.gpio_mode"/>
+      <configSetting altId="p700.spi0.miso0" configurationId="p700"/>
+      <configSetting altId="p700.gpio_speed.gpio_speed_m" configurationId="p700.gpio_drivecapacity"/>
+      <configSetting altId="p700.gpio_mode.gpio_mode_peripheral" configurationId="p700.gpio_mode"/>
+      <configSetting altId="p701.spi0.mosi0" configurationId="p701"/>
+      <configSetting altId="p701.gpio_speed.gpio_speed_m" configurationId="p701.gpio_drivecapacity"/>
+      <configSetting altId="p701.gpio_mode.gpio_mode_peripheral" configurationId="p701.gpio_mode"/>
+      <configSetting altId="p702.spi0.rspck0" configurationId="p702"/>
+      <configSetting altId="p702.gpio_mode.gpio_mode_peripheral" configurationId="p702.gpio_mode"/>
+      <configSetting altId="p703.spi0.ssla0" configurationId="p703"/>
+      <configSetting altId="p703.gpio_speed.gpio_speed_m" configurationId="p703.gpio_drivecapacity"/>
+      <configSetting altId="p703.gpio_mode.gpio_mode_peripheral" configurationId="p703.gpio_mode"/>
+      <configSetting altId="p704.gpio_mode.gpio_mode_out.low" configurationId="p704.gpio_mode"/>
+      <configSetting altId="p705.irq.irq19" configurationId="p705"/>
+      <configSetting altId="p705.gpio_irq.gpio_irq_enabled" configurationId="p705.gpio_irq"/>
+      <configSetting altId="p705.gpio_mode.gpio_mode_irq" configurationId="p705.gpio_mode"/>
+      <configSetting altId="p705.gpio_pupd.gpio_pupd_ip_up" configurationId="p705.gpio_pupd"/>
+      <configSetting altId="p810.gpt10.gtioc10a" configurationId="p810"/>
+      <configSetting altId="p810.gpio_mode.gpio_mode_peripheral" configurationId="p810.gpio_mode"/>
+      <configSetting altId="p811.gpt10.gtioc10b" configurationId="p811"/>
+      <configSetting altId="p811.gpio_mode.gpio_mode_peripheral" configurationId="p811.gpio_mode"/>
       <configSetting altId="sci0.rxd0.p602" configurationId="sci0.rxd0"/>
       <configSetting altId="sci0.txd0.p603" configurationId="sci0.txd0"/>
+      <configSetting altId="spi0.miso0.p700" configurationId="spi0.miso0"/>
+      <configSetting altId="spi0.mode.custom.free" configurationId="spi0.mode"/>
+      <configSetting altId="spi0.mosi0.p701" configurationId="spi0.mosi0"/>
+      <configSetting altId="spi0.rspck0.p702" configurationId="spi0.rspck0"/>
+      <configSetting altId="spi0.ssla0.p703" configurationId="spi0.ssla0"/>
+      <configSetting altId="spi1.miso1.p100" configurationId="spi1.miso1"/>
+      <configSetting altId="spi1.mode.custom.free" configurationId="spi1.mode"/>
+      <configSetting altId="spi1.mosi1.p101" configurationId="spi1.mosi1"/>
+      <configSetting altId="spi1.rspck1.p102" configurationId="spi1.rspck1"/>
+      <configSetting altId="spi1.sslb0.p103" configurationId="spi1.sslb0"/>
       <lockSetting id="gpt10.gtioc10a" lock="true"/>
       <lockSetting id="gpt10.gtioc10b" lock="true"/>
       <lockSetting id="gpt12.gtioc12a" lock="true"/>
@@ -980,8 +1010,17 @@
       <lockSetting id="gpt8.gtioc8b" lock="true"/>
       <lockSetting id="iic0.scl0" lock="true"/>
       <lockSetting id="iic0.sda0" lock="true"/>
+      <lockSetting id="irq.irq19" lock="true"/>
       <lockSetting id="sci0.rxd0" lock="true"/>
       <lockSetting id="sci0.txd0" lock="true"/>
+      <lockSetting id="spi0.miso0" lock="true"/>
+      <lockSetting id="spi0.mosi0" lock="true"/>
+      <lockSetting id="spi0.rspck0" lock="true"/>
+      <lockSetting id="spi0.ssla0" lock="true"/>
+      <lockSetting id="spi1.miso1" lock="true"/>
+      <lockSetting id="spi1.mosi1" lock="true"/>
+      <lockSetting id="spi1.rspck1" lock="true"/>
+      <lockSetting id="spi1.sslb0" lock="true"/>
     </pincfg>
   </raPinConfiguration>
 </raConfiguration>

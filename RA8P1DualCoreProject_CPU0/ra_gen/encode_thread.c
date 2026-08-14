@@ -4,9 +4,9 @@
 #if 1
 static StaticTask_t encode_thread_memory;
 #if defined(__ARMCC_VERSION)           /* AC6 compiler */
-                static uint8_t encode_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+                static uint8_t encode_thread_stack[8192] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
                 #else
-static uint8_t encode_thread_stack[1024] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.encode_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+static uint8_t encode_thread_stack[8192] BSP_PLACE_IN_SECTION(BSP_UNINIT_SECTION_PREFIX ".stack.encode_thread") BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 #endif
 TaskHandle_t encode_thread;
@@ -30,9 +30,9 @@ void encode_thread_create(void) {
 #else
                     BaseType_t encode_thread_create_err = xTaskCreate(
                     #endif
-			encode_thread_func, (const char*) "Encode Thread", 1024 / 4, // In words, not bytes
+			encode_thread_func, (const char*) "Encode Thread", 8192 / 4, // In words, not bytes
 			(void*) &encode_thread_parameters, //pvParameters
-			2,
+			4,
 #if 1
 			(StackType_t*) &encode_thread_stack,
 			(StaticTask_t*) &encode_thread_memory

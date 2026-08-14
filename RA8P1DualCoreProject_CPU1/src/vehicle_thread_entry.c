@@ -14,7 +14,7 @@
  *
  * 首次测试时请架空车轮。确认左右轮方向正确后，再把车辆放到地面测试。
  */
-#define VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE       (1U)
+#define VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE       (0U)
 #define VEHICLE_WHEEL_TEST_START_DELAY_MS        (2500U)
 #define VEHICLE_WHEEL_TEST_RUN_TIME_MS           (3000U)
 #define VEHICLE_WHEEL_TEST_SPEED_PERCENT         (90U)
@@ -55,6 +55,15 @@ static void execute_command(vehicle_command_t const * command)
             break;
     }
 }
+
+#if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
+static bool command_requests_stop(vehicle_command_t const * command)
+{
+    return (VEHICLE_COMMAND_EMERGENCY_STOP == command->kind) ||
+           ((VEHICLE_COMMAND_MANUAL == command->kind) &&
+            (VEHICLE_MANUAL_STOP == command->manual_action));
+}
+#endif
 
 /**
  * @brief 底盘硬件的唯一所有者。
@@ -111,9 +120,9 @@ void vehicle_thread_entry(void * pvParameters)
         if (vehicle_command_mailbox_take(&command))
         {
 #if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
-            /* 自检期间只接受急停，避免遥控命令改变测试输出。 */
+            /* 自检期间接受急停和普通停车，确保手持控制器始终可以停止车轮。 */
             if ((VEHICLE_WHEEL_TEST_COMPLETE == wheel_test_state) ||
-                (VEHICLE_COMMAND_EMERGENCY_STOP == command.kind))
+                command_requests_stop(&command))
 #endif
             {
                 execute_command(&command);
@@ -121,10 +130,10 @@ void vehicle_thread_entry(void * pvParameters)
                 remote_command_seen = VEHICLE_COMMAND_SOURCE_NRF == command.source;
             }
 #if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
-            if (VEHICLE_COMMAND_EMERGENCY_STOP == command.kind)
+            if (command_requests_stop(&command))
             {
                 wheel_test_state = VEHICLE_WHEEL_TEST_COMPLETE;
-                g_printf("[VEHICLE][TEST] aborted by emergency stop\r\n");
+                g_printf("[VEHICLE][TEST] aborted by stop command\r\n");
             }
 #endif
         }

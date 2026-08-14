@@ -70,4 +70,12 @@ shared_jpeg_cpu0_result_t shared_jpeg_cpu0_publish(
  */
 shared_jpeg_cpu0_result_t shared_jpeg_cpu0_poll(shared_jpeg_completion_t * p_completion);
 
+/* 发布一帧实时图传 JPEG。双槽已满时返回 BUSY；调用者应直接丢弃该帧。 */
+shared_jpeg_cpu0_result_t shared_video_cpu0_publish(
+    const uint8_t * p_jpeg_data,
+    size_t jpeg_length,
+    uint32_t frame_sequence,
+    uint16_t width,
+    uint16_t height);
+
 #endif /* IPC_SHARED_JPEG_CPU0_H_ */

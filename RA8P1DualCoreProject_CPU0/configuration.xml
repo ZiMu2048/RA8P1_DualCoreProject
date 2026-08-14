@@ -859,7 +859,7 @@
       <property id="_symbol" value="camera_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Camera Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="0x1800"/>
-      <property id="rtos.awsfreertos.thread.priority" value="4"/>
+      <property id="rtos.awsfreertos.thread.priority" value="3"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -877,7 +877,7 @@
       <property id="_symbol" value="ai_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="AI Thread"/>
       <property id="rtos.awsfreertos.thread.stack" value="0x2000"/>
-      <property id="rtos.awsfreertos.thread.priority" value="3"/>
+      <property id="rtos.awsfreertos.thread.priority" value="5"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
@@ -912,17 +912,8 @@
     <context id="rtos.awsfreertos.thread.1822658033">
       <property id="_symbol" value="encode_thread"/>
       <property id="rtos.awsfreertos.thread.name" value="Encode Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
-      <property id="rtos.awsfreertos.thread.priority" value="2"/>
-      <property id="rtos.awsfreertos.thread.context" value="NULL"/>
-      <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
-      <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>
-    </context>
-    <context id="rtos.awsfreertos.thread.1381046345">
-      <property id="_symbol" value="nRF27L01"/>
-      <property id="rtos.awsfreertos.thread.name" value="nRF27L01 Thread"/>
-      <property id="rtos.awsfreertos.thread.stack" value="1024"/>
-      <property id="rtos.awsfreertos.thread.priority" value="1"/>
+      <property id="rtos.awsfreertos.thread.stack" value="8192"/>
+      <property id="rtos.awsfreertos.thread.priority" value="4"/>
       <property id="rtos.awsfreertos.thread.context" value="NULL"/>
       <property id="rtos.awsfreertos.thread.allocation" value="rtos.awsfreertos.thread.allocation.static"/>
       <property id="rtos.awsfreertos.thread.secure_context" value="rtos.awsfreertos.thread.secure_context.enable"/>

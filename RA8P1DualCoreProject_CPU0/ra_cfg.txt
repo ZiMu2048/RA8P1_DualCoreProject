@@ -1188,15 +1188,6 @@ FSP Configuration
     Memory Allocation: Static
     Allocate Secure Context: Enable
     
-  Thread "nRF27L01 Thread"
-    Symbol: nRF27L01
-    Name: nRF27L01 Thread
-    Stack size (bytes): 1024
-    Priority: 1
-    Thread Context: NULL
-    Memory Allocation: Static
-    Allocate Secure Context: Enable
-    
   Object "g_ai_app_event Event Group"
     Symbol: g_ai_app_event
     Memory Allocation: Static

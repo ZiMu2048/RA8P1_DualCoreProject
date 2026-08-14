@@ -3,13 +3,19 @@
 #include "Radio/platform/fsp_nrf24_port.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include <string.h>
 
 #define VIDEO_RADIO_CHANNEL              (100U)
 #define VIDEO_RADIO_TIMEOUT_MS           (50U)
 #define VIDEO_BATCH_SIZE                 (3U)
 #define VIDEO_BATCHES_BEFORE_DELAY        (8U)
-#define VIDEO_EXPECTED_WIDTH              (240U)
-#define VIDEO_EXPECTED_HEIGHT             (136U)
+#define VIDEO_EXPECTED_WIDTH              (200U)
+#define VIDEO_EXPECTED_HEIGHT             (112U)
+
+static uint8_t const g_video_radio_address[NRF24_ADDRESS_WIDTH_MAX] =
+{
+    0x56U, 0x49U, 0x44U, 0x45U, 0x4FU /* "VIDEO" */
+};
 
 static nrf24_transport_t g_transport;
 
@@ -50,6 +56,8 @@ nrf24_result_t VideoRadio_Init(void)
     config.auto_ack_enabled = true;
     config.dynamic_payload_enabled = true;
     config.dynamic_ack_enabled = true;
+    (void) memcpy(config.tx_address, g_video_radio_address, sizeof(g_video_radio_address));
+    (void) memcpy(config.rx_pipe0_address, g_video_radio_address, sizeof(g_video_radio_address));
     return Nrf24_Initialize(&g_transport, &config, &status);
 }
 

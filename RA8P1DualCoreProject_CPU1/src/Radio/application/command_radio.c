@@ -5,6 +5,7 @@
 #include "Vehicle/adapters/rtos/vehicle_command_mailbox.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include <string.h>
 
 #define COMMAND_RADIO_CHANNEL          (76U)
 #define COMMAND_RADIO_MAX_FIFO_PACKETS (3U)
@@ -15,6 +16,10 @@ static bool g_have_sequence;
 static bool g_run_enabled;
 static bool g_automatic_mode;
 static uint8_t g_speed_percent = 50U;
+static uint8_t const g_command_radio_address[NRF24_ADDRESS_WIDTH_MAX] =
+{
+    0x43U, 0x4DU, 0x44U, 0x52U, 0x58U /* "CMDRX" */
+};
 
 static uint8_t speed_index_to_percent(uint16_t index)
 {
@@ -143,6 +148,8 @@ nrf24_result_t CommandRadio_Init(void)
     config.auto_ack_enabled = true;
     config.dynamic_payload_enabled = true;
     config.dynamic_ack_enabled = true;
+    (void) memcpy(config.tx_address, g_command_radio_address, sizeof(g_command_radio_address));
+    (void) memcpy(config.rx_pipe0_address, g_command_radio_address, sizeof(g_command_radio_address));
 
     g_have_sequence = false;
     g_run_enabled = false;

@@ -22,7 +22,7 @@ typedef struct st_fsp_nrf24_context
 } fsp_nrf24_context_t;
 
 /*
- * SPI0 使用 P700/P701/P702/P703，CE=P704，IRQ=P705。
+ * SPI0 使用 P700/P701/P702/P703，CE=P704，IRQ=P705/IRQ19。
  * SPI1 使用 P100/P101/P102/P103，CE=P104；发射端不使用 IRQ。
  * CSN 由 SPI 外设的 SSLA0/SSLB0 自动控制，因此不在此处手工翻转。
  */
@@ -38,7 +38,7 @@ static fsp_nrf24_context_t g_ports[NRF24_PORT_COUNT] =
     {
         .p_spi   = &g_spi1,
         .ce_pin = BSP_IO_PORT_01_PIN_04,
-        .irq_pin = BSP_IO_PORT_01_PIN_05,
+        .irq_pin = BSP_IO_PORT_07_PIN_05,
     },
 };
 
@@ -164,13 +164,13 @@ nrf24_result_t FspNrf24Port_Open(nrf24_port_id_t port_id,
                 return NRF24_RESULT_TRANSPORT_ERROR;
             }
 
-            err = g_external_irq0.p_api->open(g_external_irq0.p_ctrl,
-                                               g_external_irq0.p_cfg);
+            err = g_external_irq19.p_api->open(g_external_irq19.p_ctrl,
+                                                g_external_irq19.p_cfg);
             if ((FSP_SUCCESS != err) && (FSP_ERR_ALREADY_OPEN != err))
             {
                 return NRF24_RESULT_TRANSPORT_ERROR;
             }
-            err = g_external_irq0.p_api->enable(g_external_irq0.p_ctrl);
+            err = g_external_irq19.p_api->enable(g_external_irq19.p_ctrl);
             if (FSP_SUCCESS != err)
             {
                 return NRF24_RESULT_TRANSPORT_ERROR;

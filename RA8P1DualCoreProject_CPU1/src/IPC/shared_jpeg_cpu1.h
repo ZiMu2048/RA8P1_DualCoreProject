@@ -29,6 +29,18 @@ typedef struct st_shared_jpeg_cpu1_report
     uint16_t confidence_milli;
 } shared_jpeg_cpu1_report_t;
 
+typedef struct st_shared_video_cpu1_report
+{
+    bool frame_ready;
+    const uint8_t * p_payload;
+    uint32_t frame_sequence;
+    uint32_t payload_length;
+    uint32_t payload_crc32;
+    uint16_t width;
+    uint16_t height;
+    uint8_t slot_index;
+} shared_video_cpu1_report_t;
+
 /*
  *[@name] shared_jpeg_cpu1_init
  *[@type] function
@@ -69,5 +81,12 @@ shared_jpeg_cpu1_result_t shared_jpeg_cpu1_complete_upload(
     uint32_t frame_sequence,
     bool succeeded,
     shared_jpeg_error_t error_code);
+
+shared_jpeg_cpu1_result_t shared_video_cpu1_process(
+    shared_video_cpu1_report_t * p_report);
+
+shared_jpeg_cpu1_result_t shared_video_cpu1_complete(
+    uint32_t frame_sequence,
+    bool succeeded);
 
 #endif /* IPC_SHARED_JPEG_CPU1_H_ */

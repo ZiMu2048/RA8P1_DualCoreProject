@@ -248,7 +248,7 @@ void camera_thread_create(void) {
                     #endif
 			camera_thread_func, (const char*) "Camera Thread", 0x1800 / 4, // In words, not bytes
 			(void*) &camera_thread_parameters, //pvParameters
-			4,
+			3,
 #if 1
 			(StackType_t*) &camera_thread_stack,
 			(StaticTask_t*) &camera_thread_memory

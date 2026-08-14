@@ -85,11 +85,12 @@ void VideoProtocol_DataPacketBuild(video_frame_t const * p_frame,
     uint8_t const data_length = (uint8_t) ((remaining < VIDEO_PACKET_DATA_SIZE) ?
                                           remaining : VIDEO_PACKET_DATA_SIZE);
 
-    packet_init(VIDEO_PACKET_TYPE_DATA, p_frame->frame_id, packet);
-    write_u16(&packet[4], chunk_index);
-    packet[6] = data_length;
-    (void) memcpy(&packet[7], &p_frame->p_jpeg[offset], data_length);
-    packet[VIDEO_PACKET_CHECKSUM_INDEX] = checksum_calculate(packet);
+    /* DATA 包把 byte2..3 复用为分片号，byte4..31 全部装 JPEG。
+     * DATA 的完整性由 nRF24 两字节硬件 CRC 与整帧 CRC32 保证。 */
+    packet_init(VIDEO_PACKET_TYPE_DATA, chunk_index, packet);
+    (void) memcpy(&packet[VIDEO_PACKET_DATA_OFFSET],
+                  &p_frame->p_jpeg[offset],
+                  data_length);
 }
 
 void VideoProtocol_EndPacketBuild(video_frame_t const * p_frame,

@@ -160,6 +160,16 @@ fsp_err_t ImageJpeg_GetEncodedData(
     const uint8_t ** pp_jpeg_data,
     size_t * p_jpeg_size);
 
+/* 将单通道 Gray8 图像编码为 baseline JPEG，供低码率实时图传使用。 */
+fsp_err_t ImageJpeg_EncodeGray8(
+    const uint8_t * p_gray8,
+    uint16_t width,
+    uint16_t height,
+    uint8_t quality,
+    uint8_t * p_jpeg_output,
+    size_t jpeg_output_capacity,
+    size_t * p_jpeg_size);
+
 #endif /* IMAGE_UPLOAD_IMAGE_JPEG_ENCODER_H_ */
 /*
  * ======================== 本项目使用的 Arm Helium MVE intrinsic 说明 ========================

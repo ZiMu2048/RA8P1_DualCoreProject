@@ -1,6 +1,8 @@
 #include "ipc_thread.h"
 #include "IPC/shared_jpeg_cpu1.h"
 #include "WifiUpload/wifi_upload_mailbox.h"
+#include "Radio/adapters/rtos/video_frame_mailbox.h"
+#include "Radio/protocol/video_protocol.h"
 #include "SEGGER_RTT/bsp_print.h"
 
 extern TaskHandle_t ipc_thread;
@@ -35,6 +37,7 @@ void g_ipc1_callback(ipc_callback_args_t * p_args)
 void ipc_thread_entry(void * pvParameters)
 {
     fsp_err_t err;
+    uint32_t video_sequence_in_flight = 0U;
 
     FSP_PARAMETER_NOT_USED(pvParameters);
 
@@ -114,6 +117,51 @@ void ipc_thread_entry(void * pvParameters)
                      (unsigned int) result);
         }
 
-        (void) ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
+        uint16_t completed_frame_id = 0U;
+        bool video_send_succeeded = false;
+        if(VideoFrameMailbox_CompletionTake(&completed_frame_id,
+                                             &video_send_succeeded) &&
+           ((uint16_t) video_sequence_in_flight == completed_frame_id))
+        {
+            (void) shared_video_cpu1_complete(video_sequence_in_flight,
+                                              video_send_succeeded);
+            video_sequence_in_flight = 0U;
+        }
+
+        if(0U == video_sequence_in_flight)
+        {
+            shared_video_cpu1_report_t video_report;
+            shared_jpeg_cpu1_result_t const video_result =
+                shared_video_cpu1_process(&video_report);
+            if(video_report.frame_ready)
+            {
+                video_frame_t const frame =
+                {
+                    .p_jpeg = video_report.p_payload,
+                    .jpeg_size = video_report.payload_length,
+                    .crc32 = video_report.payload_crc32,
+                    .frame_id = (uint16_t) video_report.frame_sequence,
+                    .source_width = video_report.width,
+                    .source_height = video_report.height
+                };
+                if(VideoFrameMailbox_Publish(&frame))
+                {
+                    video_sequence_in_flight = video_report.frame_sequence;
+                }
+                else
+                {
+                    (void) shared_video_cpu1_complete(video_report.frame_sequence,
+                                                      false);
+                }
+            }
+            else if((SHARED_JPEG_CPU1_SUCCESS != video_result) &&
+                    (SHARED_JPEG_CPU1_NO_DATA != video_result))
+            {
+                g_printf("[VIDEO IPC][ERR] process=%u.\r\n",
+                         (unsigned int) video_result);
+            }
+        }
+
+        (void) ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5U));
     }
 }

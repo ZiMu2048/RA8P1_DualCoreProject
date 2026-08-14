@@ -32,7 +32,7 @@ void ai_thread_create(void) {
                     #endif
 			ai_thread_func, (const char*) "AI Thread", 0x2000 / 4, // In words, not bytes
 			(void*) &ai_thread_parameters, //pvParameters
-			3,
+			5,
 #if 1
 			(StackType_t*) &ai_thread_stack, (StaticTask_t*) &ai_thread_memory
 #else

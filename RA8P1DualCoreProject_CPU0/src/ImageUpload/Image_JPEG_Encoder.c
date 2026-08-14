@@ -72,6 +72,7 @@ typedef struct st_image_jpeg_write_context
 /*========================================================================================*/
 
 #define IMAGE_JPEG_RGB_COMPONENTS    (3)
+#define IMAGE_JPEG_GRAY_COMPONENTS   (1)
 #define IMAGE_JPEG_QUALITY_MIN       (1U)
 #define IMAGE_JPEG_QUALITY_MAX       (100U)
 
@@ -109,6 +110,47 @@ fsp_err_t ImageJpeg_AsyncInit(void)
         return FSP_ERR_OUT_OF_MEMORY;
     }
 
+    return FSP_SUCCESS;
+}
+
+fsp_err_t ImageJpeg_EncodeGray8(
+    const uint8_t * p_gray8,
+    uint16_t width,
+    uint16_t height,
+    uint8_t quality,
+    uint8_t * p_jpeg_output,
+    size_t jpeg_output_capacity,
+    size_t * p_jpeg_size)
+{
+    image_jpeg_write_context_t write_context;
+
+    if((NULL == p_gray8) || (NULL == p_jpeg_output) || (NULL == p_jpeg_size) ||
+       (0U == width) || (0U == height) || (0U == jpeg_output_capacity) ||
+       (quality < IMAGE_JPEG_QUALITY_MIN) || (quality > IMAGE_JPEG_QUALITY_MAX))
+    {
+        return FSP_ERR_INVALID_ARGUMENT;
+    }
+
+    *p_jpeg_size = 0U;
+    write_context.p_buffer = p_jpeg_output;
+    write_context.capacity = jpeg_output_capacity;
+    write_context.size = 0U;
+    write_context.overflow = false;
+    int const encode_result = stbi_write_jpg_to_func(
+        image_jpeg_write_callback,
+        &write_context,
+        (int) width,
+        (int) height,
+        IMAGE_JPEG_GRAY_COMPONENTS,
+        p_gray8,
+        (int) quality);
+
+    if((0 == encode_result) || write_context.overflow ||
+       (write_context.size < 4U))
+    {
+        return write_context.overflow ? FSP_ERR_OVERFLOW : FSP_ERR_INTERNAL;
+    }
+    *p_jpeg_size = write_context.size;
     return FSP_SUCCESS;
 }
 

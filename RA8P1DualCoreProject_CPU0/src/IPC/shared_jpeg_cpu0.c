@@ -23,6 +23,50 @@ static volatile shared_jpeg_control_t * const gp_shared_jpeg_control =
 static uint8_t * const gp_shared_jpeg_payload =
     (uint8_t *) (SHARED_JPEG_BASE_ADDRESS + SHARED_JPEG_PAYLOAD_OFFSET);
 static shared_jpeg_cpu0_context_t g_shared_jpeg_cpu0_context;
+static volatile shared_video_control_t * const gp_shared_video_control =
+    (volatile shared_video_control_t *) SHARED_VIDEO_BASE_ADDRESS;
+
+static uint8_t * shared_video_slot_payload(uint32_t slot_index)
+{
+    return (uint8_t *) (SHARED_VIDEO_BASE_ADDRESS + SHARED_VIDEO_HEADER_SIZE +
+                        (slot_index * SHARED_VIDEO_SLOT_CAPACITY));
+}
+
+static void shared_video_control_clean(void)
+{
+#if BSP_CFG_DCACHE_ENABLED
+    SCB_CleanDCache_by_Addr((uint32_t *) SHARED_VIDEO_BASE_ADDRESS,
+                           (int32_t) SHARED_VIDEO_HEADER_SIZE);
+#endif
+    __DMB();
+}
+
+static void shared_video_control_invalidate(void)
+{
+#if BSP_CFG_DCACHE_ENABLED
+    SCB_InvalidateDCache_by_Addr((void *) SHARED_VIDEO_BASE_ADDRESS,
+                                (int32_t) SHARED_VIDEO_HEADER_SIZE);
+#endif
+    __DMB();
+}
+
+static void shared_video_control_reset(void)
+{
+    gp_shared_video_control->magic = SHARED_VIDEO_MAGIC;
+    gp_shared_video_control->protocol_version = SHARED_VIDEO_PROTOCOL_VERSION;
+    gp_shared_video_control->header_size = SHARED_VIDEO_HEADER_SIZE;
+    gp_shared_video_control->slot_capacity = SHARED_VIDEO_SLOT_CAPACITY;
+    for(uint32_t index = 0U; index < SHARED_VIDEO_SLOT_COUNT; index++)
+    {
+        gp_shared_video_control->slots[index].state = SHARED_VIDEO_SLOT_FREE;
+        gp_shared_video_control->slots[index].frame_sequence = 0U;
+        gp_shared_video_control->slots[index].payload_length = 0U;
+        gp_shared_video_control->slots[index].payload_crc32 = 0U;
+        gp_shared_video_control->slots[index].dimensions = 0U;
+        gp_shared_video_control->slots[index].reserved = 0U;
+    }
+    shared_video_control_clean();
+}
 
 /*
  *[@name] shared_jpeg_cpu0_control_clean
@@ -160,6 +204,7 @@ fsp_err_t shared_jpeg_cpu0_init(void)
 
     memset(&g_shared_jpeg_cpu0_context, 0, sizeof(g_shared_jpeg_cpu0_context));
     shared_jpeg_cpu0_control_reset();
+    shared_video_control_reset();
 
     err = g_ipc0.p_api->open(g_ipc0.p_ctrl, g_ipc0.p_cfg);
     if(FSP_SUCCESS == err)
@@ -168,6 +213,83 @@ fsp_err_t shared_jpeg_cpu0_init(void)
     }
 
     return err;
+}
+
+shared_jpeg_cpu0_result_t shared_video_cpu0_publish(
+    const uint8_t * p_jpeg_data,
+    size_t jpeg_length,
+    uint32_t frame_sequence,
+    uint16_t width,
+    uint16_t height)
+{
+    uint32_t selected_slot = SHARED_VIDEO_SLOT_COUNT;
+
+    if(!g_shared_jpeg_cpu0_context.initialized)
+    {
+        return SHARED_JPEG_CPU0_NOT_INITIALIZED;
+    }
+    if((NULL == p_jpeg_data) || (jpeg_length < 4U) ||
+       (jpeg_length > SHARED_VIDEO_SLOT_CAPACITY) ||
+       (0U == width) || (0U == height))
+    {
+        return (jpeg_length > SHARED_VIDEO_SLOT_CAPACITY) ?
+               SHARED_JPEG_CPU0_TOO_LARGE : SHARED_JPEG_CPU0_INVALID_ARGUMENT;
+    }
+    if((0xFFU != p_jpeg_data[0]) || (0xD8U != p_jpeg_data[1]) ||
+       (0xFFU != p_jpeg_data[jpeg_length - 2U]) ||
+       (0xD9U != p_jpeg_data[jpeg_length - 1U]))
+    {
+        return SHARED_JPEG_CPU0_INVALID_ARGUMENT;
+    }
+
+    shared_video_control_invalidate();
+    if((SHARED_VIDEO_MAGIC != gp_shared_video_control->magic) ||
+       (SHARED_VIDEO_PROTOCOL_VERSION != gp_shared_video_control->protocol_version) ||
+       (SHARED_VIDEO_HEADER_SIZE != gp_shared_video_control->header_size) ||
+       (SHARED_VIDEO_SLOT_CAPACITY != gp_shared_video_control->slot_capacity))
+    {
+        shared_video_control_reset();
+    }
+
+    /* 优先使用 FREE 槽；没有空槽时覆盖尚未被 M33 取走的旧 READY 槽。 */
+    for(uint32_t index = 0U; index < SHARED_VIDEO_SLOT_COUNT; index++)
+    {
+        if(SHARED_VIDEO_SLOT_FREE == gp_shared_video_control->slots[index].state)
+        {
+            selected_slot = index;
+            break;
+        }
+        if((SHARED_VIDEO_SLOT_COUNT == selected_slot) &&
+           (SHARED_VIDEO_SLOT_READY == gp_shared_video_control->slots[index].state))
+        {
+            selected_slot = index;
+        }
+    }
+    if(SHARED_VIDEO_SLOT_COUNT == selected_slot)
+    {
+        return SHARED_JPEG_CPU0_BUSY;
+    }
+
+    gp_shared_video_control->slots[selected_slot].state = SHARED_VIDEO_SLOT_WRITING;
+    shared_video_control_clean();
+
+    uint8_t * const p_destination = shared_video_slot_payload(selected_slot);
+    memcpy(p_destination, p_jpeg_data, jpeg_length);
+#if BSP_CFG_DCACHE_ENABLED
+    SCB_CleanDCache_by_Addr((uint32_t *) p_destination, (int32_t) jpeg_length);
+#endif
+    gp_shared_video_control->slots[selected_slot].frame_sequence = frame_sequence;
+    gp_shared_video_control->slots[selected_slot].payload_length = (uint32_t) jpeg_length;
+    gp_shared_video_control->slots[selected_slot].payload_crc32 =
+        shared_jpeg_crc32(p_destination, jpeg_length);
+    gp_shared_video_control->slots[selected_slot].dimensions =
+        (uint32_t) width | ((uint32_t) height << 16U);
+    gp_shared_video_control->slots[selected_slot].state = SHARED_VIDEO_SLOT_READY;
+    shared_video_control_clean();
+
+    return (FSP_SUCCESS == g_ipc0.p_api->messageSend(g_ipc0.p_ctrl,
+                                                      SHARED_VIDEO_IPC_FRAME_READY)) ?
+           SHARED_JPEG_CPU0_SUCCESS : SHARED_JPEG_CPU0_NOTIFY_PENDING;
 }
 
 /*

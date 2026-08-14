@@ -103,8 +103,8 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 12) /* USBHS */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* OSPI0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 17) /* OSPI1 */ | \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 18) /* SPI1 */ | \
-            (((2 > 0) ? 0U : 1U) << 19) /* SPI0 */ | \
+            (((1 > 0) ? 0U : 1U) << 18) /* SPI1 */ | \
+            (((1 > 0) ? 0U : 1U) << 19) /* SPI0 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 22) /* SCI9 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 23) /* SCI8 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 24) /* SCI7 */ | \
@@ -278,7 +278,7 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16U) /* External IRQ16 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 17U) /* External IRQ17 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 18U) /* External IRQ18 */ | \
-            (((1 > 0) ? 0U : 1U) << 19U) /* External IRQ19 */ | \
+            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 19U) /* External IRQ19 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 20U) /* External IRQ20 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 21U) /* External IRQ21 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 22U) /* External IRQ22 */ | \

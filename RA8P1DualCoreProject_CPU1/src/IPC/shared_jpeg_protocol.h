@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define SHARED_JPEG_BASE_ADDRESS       (0x6FFE0000UL)
-#define SHARED_JPEG_TOTAL_SIZE         (0x00020000UL)
+#define SHARED_JPEG_TOTAL_SIZE         (0x00011000UL)
 #define SHARED_JPEG_HEADER_SIZE        (64UL)
 #define SHARED_JPEG_PAYLOAD_OFFSET     (SHARED_JPEG_HEADER_SIZE)
 #define SHARED_JPEG_PAYLOAD_CAPACITY   (SHARED_JPEG_TOTAL_SIZE - SHARED_JPEG_PAYLOAD_OFFSET)
@@ -68,8 +68,50 @@ typedef struct st_shared_jpeg_control
 
 _Static_assert(sizeof(shared_jpeg_control_t) == SHARED_JPEG_HEADER_SIZE,
                "shared_jpeg_control_t must be 64 bytes");
-_Static_assert((SHARED_JPEG_BASE_ADDRESS + SHARED_JPEG_TOTAL_SIZE) == 0x70000000UL,
-               "shared JPEG window must match the current SHAREMEM region");
+
+#define SHARED_VIDEO_BASE_ADDRESS      (0x6FFF1000UL)
+#define SHARED_VIDEO_TOTAL_SIZE        (0x0000F000UL)
+#define SHARED_VIDEO_HEADER_SIZE       (64UL)
+#define SHARED_VIDEO_SLOT_COUNT        (2UL)
+#define SHARED_VIDEO_SLOT_CAPACITY     \
+    ((SHARED_VIDEO_TOTAL_SIZE - SHARED_VIDEO_HEADER_SIZE) / SHARED_VIDEO_SLOT_COUNT)
+#define SHARED_VIDEO_MAGIC             (0x56494430UL)
+#define SHARED_VIDEO_PROTOCOL_VERSION  (1UL)
+#define SHARED_VIDEO_IPC_FRAME_READY   (0x56440001UL)
+
+typedef enum e_shared_video_slot_state
+{
+    SHARED_VIDEO_SLOT_FREE = 0,
+    SHARED_VIDEO_SLOT_WRITING,
+    SHARED_VIDEO_SLOT_READY,
+    SHARED_VIDEO_SLOT_IN_USE
+} shared_video_slot_state_t;
+
+typedef struct st_shared_video_slot
+{
+    uint32_t state;
+    uint32_t frame_sequence;
+    uint32_t payload_length;
+    uint32_t payload_crc32;
+    uint32_t dimensions;
+    uint32_t reserved;
+} shared_video_slot_t;
+
+typedef struct st_shared_video_control
+{
+    uint32_t magic;
+    uint32_t protocol_version;
+    uint32_t header_size;
+    uint32_t slot_capacity;
+    shared_video_slot_t slots[SHARED_VIDEO_SLOT_COUNT];
+} shared_video_control_t;
+
+_Static_assert(sizeof(shared_video_control_t) == SHARED_VIDEO_HEADER_SIZE,
+               "shared_video_control_t must be 64 bytes");
+_Static_assert((SHARED_JPEG_BASE_ADDRESS + SHARED_JPEG_TOTAL_SIZE) == SHARED_VIDEO_BASE_ADDRESS,
+               "fault JPEG and realtime video windows must be contiguous");
+_Static_assert((SHARED_VIDEO_BASE_ADDRESS + SHARED_VIDEO_TOTAL_SIZE) == 0x70000000UL,
+               "shared windows must match the current SHAREMEM region");
 
 /*
  *[@name] shared_jpeg_crc32

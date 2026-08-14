@@ -4,31 +4,9 @@
 
 const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 
-{ .pin = BSP_IO_PORT_03_PIN_03, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_03_PIN_04, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_04_PIN_00, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_04_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_04_PIN_09, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_MID
-		| (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_IIC) },
-
-{ .pin = BSP_IO_PORT_04_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_DRIVE_MID
-		| (uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_IIC) },
-
-{ .pin = BSP_IO_PORT_05_PIN_01, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
-
-{ .pin = BSP_IO_PORT_05_PIN_02, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
-		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
+{ .pin = BSP_IO_PORT_07_PIN_05, .pin_cfg = ((uint32_t) IOPORT_CFG_IRQ_ENABLE
+		| (uint32_t) IOPORT_CFG_PORT_DIRECTION_INPUT
+		| (uint32_t) IOPORT_CFG_PULLUP_ENABLE) },
 
 { .pin = BSP_IO_PORT_06_PIN_02, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_SCI0_2_4_6_8) },
@@ -36,10 +14,10 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] = {
 { .pin = BSP_IO_PORT_06_PIN_03, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_SCI0_2_4_6_8) },
 
-{ .pin = BSP_IO_PORT_06_PIN_04, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+{ .pin = BSP_IO_PORT_08_PIN_10, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_GPT1) },
 
-{ .pin = BSP_IO_PORT_06_PIN_05, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
+{ .pin = BSP_IO_PORT_08_PIN_11, .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN
 		| (uint32_t) IOPORT_PERIPHERAL_GPT1) }, };
 
 const ioport_cfg_t g_bsp_pin_cfg = { .number_of_pins =
