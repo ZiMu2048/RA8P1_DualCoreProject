@@ -2,6 +2,8 @@
 .metadata/
 .settings/
 .clangd/
+# ===== e² studio / IDE 项目文件(用时取消) ===== 
+.pydevproject                
 
 # ===== 构建产物 =====
 Debug/
