@@ -1,0 +1,6 @@
+item,x_cm,y_cm,width_cm,length_cm,notes
+vehicle_body,0,0,21.5,21.5,"Origin is the vehicle lower-left corner in top view; +x points right and +y points forward"
+vehicle_center,10.75,10.75,,,"Geometric center of the 21.5 cm by 21.5 cm body"
+vehicle_front_left,0,21.5,,,"Front-left body corner"
+vehicle_front_right,21.5,21.5,,,"Front-right body corner"
+camera,10.75,26.5,,,"Front-center camera; 5.0 cm ahead of the body front edge; height and pitch not yet specified"

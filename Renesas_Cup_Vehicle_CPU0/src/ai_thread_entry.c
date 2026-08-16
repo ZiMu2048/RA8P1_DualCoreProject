@@ -8,10 +8,12 @@
 #include "AI/ai_inference_result.h"
 #include "ImageUpload/Image_JPEG_Encoder.h"
 #include "IPC/shared_jpeg_cpu0.h"
+#include "IPC/yolo_safety_ipc_runtime.h"
 #include <stddef.h>
 #include <stdint.h>
 
 #define AI_CONFIDENCE_THRESHOLD       (0.50f) /*最低检测置信度阈值*/
+#define AI_SAFETY_CONFIDENCE_THRESHOLD (0.60f) /* 防碰撞投票要求严格大于60%。 */
 #define AI_NMS_IOU_THRESHOLD          (0.45f)
 #define AI_JPEG_CLEAR_FRAME_COUNT     (10U)
 
@@ -224,8 +226,7 @@ void ai_thread_entry(void * pvParameters)
             continue;
         }
 
-        p_completed_frame =
-            camera_completed_frame_get(&completed_sequence);
+        p_completed_frame = camera_completed_frame_get(&completed_sequence);
 
         if(NULL == p_completed_frame)
         {
@@ -319,6 +320,11 @@ void ai_thread_entry(void * pvParameters)
                 max_confidence = detections[i].score;
             }
         }
+
+        (void) yolo_safety_ipc_publish(
+            completed_sequence,
+            (detection_count > 0) &&
+            (max_confidence > AI_SAFETY_CONFIDENCE_THRESHOLD));
 
         if((detection_count > 0) &&
            (max_confidence >= AI_CONFIDENCE_THRESHOLD))

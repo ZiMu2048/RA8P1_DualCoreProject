@@ -1,0 +1,3 @@
+evaluation,evaluated_count,true_danger,missed_danger,false_danger,true_safe,danger_recall,safe_recall,balanced_accuracy
+Training,311,111,3,2,195,0.973684210526316,0.989847715736041,0.981765963131178
+Leave-one-capture-group-out,311,82,32,27,170,0.719298245614035,0.862944162436548,0.791121204025292

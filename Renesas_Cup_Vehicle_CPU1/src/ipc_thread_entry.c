@@ -1,7 +1,10 @@
 #include "ipc_thread.h"
 #include "app_runtime.h"
 #include "IPC/navigation_ipc_protocol.h"
+#include "IPC/navigation_ipc_runtime.h"
 #include "IPC/shared_jpeg_cpu1.h"
+#include "IPC/yolo_safety_ipc_protocol.h"
+#include "IPC/yolo_safety_runtime.h"
 #include "Vehicle/adapters/rtos/vehicle_command_mailbox.h"
 #include "WifiUpload/wifi_upload_mailbox.h"
 #include "Radio/adapters/rtos/video_frame_mailbox.h"
@@ -10,19 +13,103 @@
 
 /* 导航速度参数集中在M33输入适配层，后续实车只需调整这些宏。 */
 #define NAV_FORWARD_SPEED_PERCENT       (90U)  /* MPU隔离阶段的自动前进PWM百分比。 */
-#define NAV_LEFT_TURN_SPEED_PERCENT     (90U)  /* MPU隔离阶段的原地左转PWM百分比。 */
+#define NAV_LEFT_TURN_SPEED_PERCENT     (100U) /* MPU隔离阶段的原地左转PWM百分比。 */
+#define NAV_RIGHT_TURN_SPEED_PERCENT    (100U) /* MPU隔离阶段的原地右转PWM百分比。 */
+#define NAV_IPC_ACTION_RTT_ENABLE       (0U)   /* 置1后打印请求动作和实际下发动作。 */
+#define YOLO_SAFETY_CPU1_QUEUE_LENGTH   (8U)
 
 static volatile bool g_navigation_message_pending;
 static volatile uint32_t g_navigation_message;
+static volatile bool g_navigation_auto_rearm_pending;
+static yolo_safety_result_t g_yolo_safety_results[YOLO_SAFETY_CPU1_QUEUE_LENGTH];
+static volatile uint32_t g_yolo_safety_result_read;
+static volatile uint32_t g_yolo_safety_result_write;
+static volatile uint32_t g_yolo_safety_result_count;
+extern TaskHandle_t ipc_thread;
 
+bool yolo_safety_result_take(yolo_safety_result_t * p_result)
+{
+    bool available = false;
+
+    if(NULL == p_result)
+    {
+        return false;
+    }
+
+    taskENTER_CRITICAL();
+    if(g_yolo_safety_result_count > 0U)
+    {
+        *p_result = g_yolo_safety_results[g_yolo_safety_result_read];
+        g_yolo_safety_result_read =
+            (g_yolo_safety_result_read + 1U) % YOLO_SAFETY_CPU1_QUEUE_LENGTH;
+        g_yolo_safety_result_count--;
+        available = true;
+    }
+    taskEXIT_CRITICAL();
+    return available;
+}
+
+static void yolo_safety_result_publish_from_isr(
+    yolo_safety_ipc_result_t const * p_ipc_result)
+{
+    if(g_yolo_safety_result_count >= YOLO_SAFETY_CPU1_QUEUE_LENGTH)
+    {
+        g_yolo_safety_result_read =
+            (g_yolo_safety_result_read + 1U) % YOLO_SAFETY_CPU1_QUEUE_LENGTH;
+        g_yolo_safety_result_count--;
+    }
+
+    g_yolo_safety_results[g_yolo_safety_result_write].frame_sequence =
+        p_ipc_result->frame_sequence;
+    g_yolo_safety_results[g_yolo_safety_result_write].detected =
+        p_ipc_result->detected;
+    g_yolo_safety_result_write =
+        (g_yolo_safety_result_write + 1U) % YOLO_SAFETY_CPU1_QUEUE_LENGTH;
+    __DMB();
+    g_yolo_safety_result_count++;
+}
+
+#if NAV_IPC_ACTION_RTT_ENABLE
 static const char * navigation_action_name(nav_ipc_action_t action)
 {
     switch(action)
     {
         case NAV_IPC_ACTION_FORWARD:   return "FORWARD";
         case NAV_IPC_ACTION_TURN_LEFT: return "TURN_LEFT";
+        case NAV_IPC_ACTION_TURN_RIGHT: return "TURN_RIGHT";
+        case NAV_IPC_ACTION_MANUAL_LATCH: return "MANUAL_LATCH";
+        case NAV_IPC_ACTION_AUTO_REARMED_STOP: return "AUTO_REARMED_STOP";
         case NAV_IPC_ACTION_STOP:
         default:                       return "STOP";
+    }
+}
+#endif
+
+void navigation_ipc_auto_rearm_request(void)
+{
+    taskENTER_CRITICAL();
+    g_navigation_auto_rearm_pending = true;
+    taskEXIT_CRITICAL();
+    xTaskNotifyGive(ipc_thread);
+}
+
+static void navigation_auto_rearm_send_service(void)
+{
+    bool pending;
+
+    taskENTER_CRITICAL();
+    pending = g_navigation_auto_rearm_pending;
+    g_navigation_auto_rearm_pending = false;
+    taskEXIT_CRITICAL();
+
+    if(pending &&
+       (FSP_SUCCESS != g_ipc1.p_api->messageSend(
+            g_ipc1.p_ctrl,
+            nav_ipc_control_message_encode(NAV_IPC_CONTROL_AUTO_REARM))))
+    {
+        taskENTER_CRITICAL();
+        g_navigation_auto_rearm_pending = true;
+        taskEXIT_CRITICAL();
     }
 }
 
@@ -43,11 +130,11 @@ static bool navigation_message_take(uint32_t * p_message)
 
 static void navigation_command_dispatch(uint32_t message)
 {
-    static bool turn_left_armed;
+#if NAV_IPC_ACTION_RTT_ENABLE
     static nav_ipc_action_t last_logged_request = NAV_IPC_ACTION_COUNT;
     static nav_ipc_action_t last_logged_applied = NAV_IPC_ACTION_COUNT;
+#endif
     nav_ipc_action_t requested_action;
-    nav_ipc_action_t applied_action = NAV_IPC_ACTION_STOP;
     uint8_t sequence;
 
     if(!nav_ipc_message_decode(message, &requested_action, &sequence))
@@ -65,33 +152,29 @@ static void navigation_command_dispatch(uint32_t message)
         .speed_percent = 0U,
     };
 
-    if(NAV_IPC_ACTION_TURN_LEFT == requested_action)
+    switch(requested_action)
     {
-        if(turn_left_armed)
-        {
-            applied_action = NAV_IPC_ACTION_TURN_LEFT;
-        }
-        else
-        {
-            /* 首个转向帧只停车，下一帧危险仍锁存时才左转。 */
-            turn_left_armed = true;
-        }
-    }
-    else
-    {
-        turn_left_armed = false;
-        applied_action = requested_action;
-    }
-
-    if(NAV_IPC_ACTION_FORWARD == applied_action)
-    {
-        command.manual_action = VEHICLE_MANUAL_FORWARD;
-        command.speed_percent = NAV_FORWARD_SPEED_PERCENT;
-    }
-    else if(NAV_IPC_ACTION_TURN_LEFT == applied_action)
-    {
-        command.manual_action = VEHICLE_MANUAL_TURN_LEFT;
-        command.speed_percent = NAV_LEFT_TURN_SPEED_PERCENT;
+        case NAV_IPC_ACTION_FORWARD:
+            command.manual_action = VEHICLE_MANUAL_FORWARD;
+            command.speed_percent = NAV_FORWARD_SPEED_PERCENT;
+            break;
+        case NAV_IPC_ACTION_TURN_LEFT:
+            command.manual_action = VEHICLE_MANUAL_TURN_LEFT;
+            command.speed_percent = NAV_LEFT_TURN_SPEED_PERCENT;
+            break;
+        case NAV_IPC_ACTION_TURN_RIGHT:
+            command.manual_action = VEHICLE_MANUAL_TURN_RIGHT;
+            command.speed_percent = NAV_RIGHT_TURN_SPEED_PERCENT;
+            break;
+        case NAV_IPC_ACTION_MANUAL_LATCH:
+            command.kind = VEHICLE_COMMAND_NAVIGATION_MANUAL_LATCH;
+            break;
+        case NAV_IPC_ACTION_AUTO_REARMED_STOP:
+            command.kind = VEHICLE_COMMAND_NAVIGATION_REARMED_STOP;
+            break;
+        case NAV_IPC_ACTION_STOP:
+        default:
+            break;
     }
 
     if(!vehicle_command_mailbox_submit(&command))
@@ -100,20 +183,20 @@ static void navigation_command_dispatch(uint32_t message)
         return;
     }
 
+#if NAV_IPC_ACTION_RTT_ENABLE
     if((requested_action != last_logged_request) ||
-       (applied_action != last_logged_applied))
+       (requested_action != last_logged_applied))
     {
         g_printf("[NAV IPC] seq=%u request=%s applied=%s speed=%u%%.\r\n",
                  (unsigned int) sequence,
                  navigation_action_name(requested_action),
-                 navigation_action_name(applied_action),
+                 navigation_action_name(requested_action),
                  (unsigned int) command.speed_percent);
         last_logged_request = requested_action;
-        last_logged_applied = applied_action;
+        last_logged_applied = requested_action;
     }
+#endif
 }
-
-extern TaskHandle_t ipc_thread;
 
 /*
  *[@name] g_ipc1_callback
@@ -131,6 +214,7 @@ void g_ipc1_callback(ipc_callback_args_t * p_args)
     {
         nav_ipc_action_t action;
         uint8_t sequence;
+        yolo_safety_ipc_result_t yolo_result;
         if(nav_ipc_message_decode(p_args->message, &action, &sequence))
         {
             FSP_PARAMETER_NOT_USED(action);
@@ -138,6 +222,10 @@ void g_ipc1_callback(ipc_callback_args_t * p_args)
             g_navigation_message = p_args->message;
             __DMB();
             g_navigation_message_pending = true;
+        }
+        else if(yolo_safety_ipc_message_decode(p_args->message, &yolo_result))
+        {
+            yolo_safety_result_publish_from_isr(&yolo_result);
         }
         else
         {
@@ -195,6 +283,7 @@ void ipc_thread_entry(void * pvParameters)
         {
             navigation_command_dispatch(navigation_message);
         }
+        navigation_auto_rearm_send_service();
 
         shared_jpeg_cpu1_report_t report;
         shared_jpeg_cpu1_result_t const result =

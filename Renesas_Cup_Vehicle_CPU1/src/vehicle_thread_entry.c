@@ -1,5 +1,7 @@
 #include <vehicle_thread.h>
 #include "app_runtime.h"
+#include "IPC/navigation_ipc_runtime.h"
+#include "IPC/yolo_safety_runtime.h"
 #include "Vehicle/adapters/rtos/vehicle_command_mailbox.h"
 #include "Vehicle/application/vehicle_service.h"
 #include "Vehicle/platform/fsp_vehicle_factory.h"
@@ -9,6 +11,31 @@
 #define VEHICLE_CONTROL_PERIOD_MS          (10U)
 #define VEHICLE_NAV_COMMAND_TIMEOUT_MS     (500U) /* M85导航失联停车时间。 */
 #define VEHICLE_STARTUP_SUCTION_PERCENT    (80U)
+
+/*
+ * 无IMU期间用“转向PWM百分比×时间”估算连续单向转角。
+ * 675 ms@100%按现有参数等效为约90度，270000 %-ms约等于一整圈，实车后必须重标定。
+ */
+#define VEHICLE_NAV_TURN_90_TIME_MS             (675U)
+#define VEHICLE_NAV_TURN_CALIBRATION_PERCENT    (100U)
+#define VEHICLE_NAV_TURN_360_EFFORT_LIMIT       \
+    (4U * VEHICLE_NAV_TURN_90_TIME_MS * VEHICLE_NAV_TURN_CALIBRATION_PERCENT)
+
+/* 置0仅关闭YOLO对电机的安全仲裁，YOLO IPC结果仍会被读取并排空。 */
+#define VEHICLE_YOLO_SAFETY_ENABLE              (1U)
+
+/* YOLO只识别一种目标，仅采用最近6个不同源帧结果的3票仲裁。 */
+#define VEHICLE_YOLO_VOTE_WINDOW_RESULTS         (6U)
+#define VEHICLE_YOLO_REQUIRED_POSITIVES          (3U)
+
+#if (VEHICLE_YOLO_SAFETY_ENABLE > 1U)
+#error "VEHICLE_YOLO_SAFETY_ENABLE must be 0 or 1"
+#endif
+
+#if (VEHICLE_YOLO_REQUIRED_POSITIVES == 0U) || \
+    (VEHICLE_YOLO_REQUIRED_POSITIVES > VEHICLE_YOLO_VOTE_WINDOW_RESULTS)
+#error "YOLO vote configuration is invalid"
+#endif
 
 #define VEHICLE_NAV_MOTOR_OUTPUT_ENABLE    (1U)
 
@@ -30,6 +57,19 @@ typedef enum e_vehicle_wheel_test_state
     VEHICLE_WHEEL_TEST_RUNNING,
     VEHICLE_WHEEL_TEST_COMPLETE,
 } vehicle_wheel_test_state_t;
+
+typedef struct st_vehicle_yolo_vote
+{
+    bool detected;
+} vehicle_yolo_vote_t;
+
+typedef struct st_vehicle_yolo_guard
+{
+    vehicle_yolo_vote_t votes[VEHICLE_YOLO_VOTE_WINDOW_RESULTS];
+    uint32_t vote_count;
+    bool have_sequence;
+    uint8_t last_sequence;
+} vehicle_yolo_guard_t;
 
 static vehicle_result_t execute_command(vehicle_command_t const * command)
 {
@@ -64,6 +104,10 @@ static vehicle_result_t execute_command(vehicle_command_t const * command)
         }
         case VEHICLE_COMMAND_SET_MODE:
             return vehicle_service_mode_set(command->mode);
+        case VEHICLE_COMMAND_NAVIGATION_MANUAL_LATCH:
+            return vehicle_service_mode_set(VEHICLE_MODE_MANUAL);
+        case VEHICLE_COMMAND_NAVIGATION_REARMED_STOP:
+            return vehicle_service_navigation_command(VEHICLE_MANUAL_STOP, 0U);
         case VEHICLE_COMMAND_EMERGENCY_STOP:
             vehicle_service_emergency_stop();
             return VEHICLE_RESULT_OK;
@@ -72,11 +116,76 @@ static vehicle_result_t execute_command(vehicle_command_t const * command)
     }
 }
 
+static bool command_requests_auto(vehicle_command_t const * command)
+{
+    return (VEHICLE_COMMAND_SOURCE_NRF == command->source) &&
+           ((VEHICLE_COMMAND_START_AUTOMATIC == command->kind) ||
+            ((VEHICLE_COMMAND_SET_MODE == command->kind) &&
+             (VEHICLE_MODE_AUTOMATIC == command->mode)));
+}
+
+static bool navigation_sequence_is_newer(uint32_t sequence, uint8_t reference)
+{
+    uint8_t const delta = (uint8_t) ((uint8_t) sequence - reference);
+    return (0U != delta) && (delta < 128U);
+}
+
+static void vehicle_yolo_guard_reset(vehicle_yolo_guard_t * p_guard)
+{
+    p_guard->vote_count = 0U;
+    p_guard->have_sequence = false;
+    p_guard->last_sequence = 0U;
+}
+
+static bool vehicle_yolo_guard_result_add(vehicle_yolo_guard_t * p_guard,
+                                          yolo_safety_result_t const * p_result)
+{
+    if(p_guard->have_sequence &&
+       !navigation_sequence_is_newer(p_result->frame_sequence,
+                                     p_guard->last_sequence))
+    {
+        return false;
+    }
+
+    p_guard->have_sequence = true;
+    p_guard->last_sequence = p_result->frame_sequence;
+
+    if(p_guard->vote_count >= VEHICLE_YOLO_VOTE_WINDOW_RESULTS)
+    {
+        for(uint32_t index = 1U; index < p_guard->vote_count; index++)
+        {
+            p_guard->votes[index - 1U] = p_guard->votes[index];
+        }
+        p_guard->vote_count--;
+    }
+
+    p_guard->votes[p_guard->vote_count].detected = p_result->detected;
+    p_guard->vote_count++;
+
+    uint32_t positive_count = 0U;
+    for(uint32_t index = 0U; index < p_guard->vote_count; index++)
+    {
+        positive_count += p_guard->votes[index].detected ? 1U : 0U;
+    }
+    return positive_count >= VEHICLE_YOLO_REQUIRED_POSITIVES;
+}
+
+/* 安全锁定后的AUTO只重新进入审核状态，不允许内置自动轨迹直接驱动车轮。 */
+static vehicle_result_t execute_rearm_auto_command(vehicle_command_t const * command)
+{
+    vehicle_result_t const speed_result =
+        vehicle_service_automatic_speed_set(command->speed_percent);
+    return (VEHICLE_RESULT_OK == speed_result) ?
+           vehicle_service_mode_set(VEHICLE_MODE_AUTOMATIC) : speed_result;
+}
+
 static bool command_requests_stop(vehicle_command_t const * command)
 {
     return (VEHICLE_COMMAND_EMERGENCY_STOP == command->kind) ||
+           (VEHICLE_COMMAND_NAVIGATION_MANUAL_LATCH == command->kind) ||
+           (VEHICLE_COMMAND_NAVIGATION_REARMED_STOP == command->kind) ||
            ((VEHICLE_COMMAND_MANUAL == command->kind) &&
-            (VEHICLE_MANUAL_STOP == command->manual_action));
+             (VEHICLE_MANUAL_STOP == command->manual_action));
 }
 
 static void log_i2c_error_if_changed(void)
@@ -125,8 +234,18 @@ void vehicle_thread_entry(void * pvParameters)
     TickType_t wake_tick;
     TickType_t automatic_enter_tick;
     TickType_t last_navigation_tick;
+    TickType_t navigation_guard_tick;
+    TickType_t safety_latch_tick = 0U;
     bool navigation_motion_active = false;
+    bool safety_manual_latched = false;
+    bool awaiting_navigation_rearm = false;
     vehicle_mode_t control_mode = VEHICLE_MODE_MANUAL;
+    vehicle_manual_command_t navigation_turn_direction = VEHICLE_MANUAL_STOP;
+    uint8_t navigation_turn_speed_percent = 0U;
+    uint8_t safety_latch_navigation_sequence = 0U;
+    uint8_t last_navigation_sequence = 0U;
+    uint32_t navigation_turn_effort = 0U;
+    vehicle_yolo_guard_t yolo_guard;
     vehicle_result_t last_command_error = VEHICLE_RESULT_OK;
 #if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
     vehicle_wheel_test_state_t wheel_test_state = VEHICLE_WHEEL_TEST_WAITING;
@@ -195,12 +314,84 @@ void vehicle_thread_entry(void * pvParameters)
     wake_tick = xTaskGetTickCount();
     automatic_enter_tick = wake_tick;
     last_navigation_tick = wake_tick;
+    navigation_guard_tick = wake_tick;
+    vehicle_yolo_guard_reset(&yolo_guard);
 #if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
     wheel_test_tick = wake_tick;
     g_printf("[VEHICLE][TEST] wheel test waiting for suction\r\n");
 #endif
     for (;;)
     {
+        TickType_t const guard_now = xTaskGetTickCount();
+        TickType_t const guard_elapsed_ticks = guard_now - navigation_guard_tick;
+        navigation_guard_tick = guard_now;
+
+        if(navigation_motion_active &&
+           ((VEHICLE_MANUAL_TURN_LEFT == navigation_turn_direction) ||
+            (VEHICLE_MANUAL_TURN_RIGHT == navigation_turn_direction)))
+        {
+            uint32_t const elapsed_ms = (uint32_t)
+                (((uint64_t) guard_elapsed_ticks * 1000U) / configTICK_RATE_HZ);
+            uint32_t const effort_increment =
+                (uint32_t) navigation_turn_speed_percent * elapsed_ms;
+            navigation_turn_effort =
+                (navigation_turn_effort > (UINT32_MAX - effort_increment)) ?
+                UINT32_MAX : navigation_turn_effort + effort_increment;
+
+            if(navigation_turn_effort >= VEHICLE_NAV_TURN_360_EFFORT_LIMIT)
+            {
+                vehicle_result_t const latch_result =
+                    vehicle_service_mode_set(VEHICLE_MODE_MANUAL);
+                if(VEHICLE_RESULT_OK == latch_result)
+                {
+                    control_mode = VEHICLE_MODE_MANUAL;
+                    safety_manual_latched = true;
+                    awaiting_navigation_rearm = false;
+                    safety_latch_tick = guard_now;
+                    safety_latch_navigation_sequence = last_navigation_sequence;
+                    navigation_motion_active = false;
+                    navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                    g_printf("[VEHICLE][SAFE] turn effort reached 360-degree guard; "
+                             "manual latch entered.\r\n");
+                }
+                else
+                {
+                    vehicle_service_emergency_stop();
+                }
+            }
+        }
+
+        yolo_safety_result_t yolo_result;
+        while(yolo_safety_result_take(&yolo_result))
+        {
+            if((0U != VEHICLE_YOLO_SAFETY_ENABLE) &&
+               (VEHICLE_MODE_AUTOMATIC == control_mode) &&
+               !safety_manual_latched &&
+               vehicle_yolo_guard_result_add(&yolo_guard, &yolo_result))
+            {
+                vehicle_result_t const latch_result =
+                    vehicle_service_mode_set(VEHICLE_MODE_MANUAL);
+                if(VEHICLE_RESULT_OK == latch_result)
+                {
+                    control_mode = VEHICLE_MODE_MANUAL;
+                    safety_manual_latched = true;
+                    awaiting_navigation_rearm = false;
+                    safety_latch_tick = xTaskGetTickCount();
+                    safety_latch_navigation_sequence = last_navigation_sequence;
+                    navigation_motion_active = false;
+                    navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                    navigation_turn_speed_percent = 0U;
+                    navigation_turn_effort = 0U;
+                    g_printf("[VEHICLE][SAFE] YOLO 3-of-6 vote triggered; "
+                             "manual latch entered.\r\n");
+                }
+                else
+                {
+                    vehicle_service_emergency_stop();
+                }
+            }
+        }
+
         if (vehicle_command_mailbox_take(&command))
         {
 #if VEHICLE_WHEEL_STRAIGHT_TEST_ENABLE
@@ -210,11 +401,22 @@ void vehicle_thread_entry(void * pvParameters)
 #endif
             {
                 bool const mode_command = VEHICLE_COMMAND_SET_MODE == command.kind;
-                bool const command_allowed = mode_command ||
+                bool const auto_start_command =
+                    VEHICLE_COMMAND_START_AUTOMATIC == command.kind;
+                bool const auto_request = command_requests_auto(&command);
+                bool const auto_received_after_latch =
+                    ((int32_t) (command.received_tick - safety_latch_tick) > 0);
+                bool const rearm_request = safety_manual_latched &&
+                    auto_request && auto_received_after_latch;
+                bool const stale_auto_blocked = safety_manual_latched &&
+                    auto_request && !rearm_request;
+                bool const command_allowed = !stale_auto_blocked && (mode_command ||
                     (VEHICLE_COMMAND_MANUAL != command.kind) ||
-                    (VEHICLE_MODE_MANUAL == control_mode);
+                    (VEHICLE_MODE_MANUAL == control_mode));
                 vehicle_result_t const command_result = command_allowed ?
-                    execute_command(&command) : VEHICLE_RESULT_OK;
+                    (rearm_request ? execute_rearm_auto_command(&command) :
+                                     execute_command(&command)) :
+                    VEHICLE_RESULT_OK;
                 if(VEHICLE_RESULT_OK != command_result)
                 {
                     if(command_result != last_command_error)
@@ -238,16 +440,41 @@ void vehicle_thread_entry(void * pvParameters)
                     g_printf("[VEHICLE] command execution recovered.\r\n");
                     last_command_error = VEHICLE_RESULT_OK;
                 }
-                if(command_allowed && mode_command &&
+                if(command_allowed && rearm_request &&
                    (VEHICLE_RESULT_OK == command_result))
                 {
-                    control_mode = command.mode;
+                    vehicle_command_t stale_navigation;
+                    control_mode = VEHICLE_MODE_AUTOMATIC;
+                    safety_manual_latched = false;
+                    awaiting_navigation_rearm = true;
                     navigation_motion_active = false;
+                    navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                    navigation_turn_speed_percent = 0U;
+                    navigation_turn_effort = 0U;
+                    (void) vehicle_command_mailbox_navigation_take(&stale_navigation);
+                    automatic_enter_tick = xTaskGetTickCount();
+                    vehicle_yolo_guard_reset(&yolo_guard);
+                    navigation_ipc_auto_rearm_request();
+                    g_printf("[VEHICLE][SAFE] new NRF AUTO accepted; "
+                             "waiting for fresh M85 navigation decision.\r\n");
+                }
+                else if(command_allowed &&
+                   (mode_command || auto_start_command) &&
+                   (VEHICLE_RESULT_OK == command_result))
+                {
+                    /* START_AUTOMATIC本身也会切换底层模式，必须同步软件仲裁状态。 */
+                    control_mode = auto_start_command ?
+                        VEHICLE_MODE_AUTOMATIC : command.mode;
+                    navigation_motion_active = false;
+                    navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                    navigation_turn_speed_percent = 0U;
+                    navigation_turn_effort = 0U;
                     if(VEHICLE_MODE_AUTOMATIC == control_mode)
                     {
                         vehicle_command_t stale_navigation;
                         (void) vehicle_command_mailbox_navigation_take(&stale_navigation);
                         automatic_enter_tick = xTaskGetTickCount();
+                        vehicle_yolo_guard_reset(&yolo_guard);
                     }
                     g_printf("[VEHICLE] control mode=%s.\r\n",
                              (VEHICLE_MODE_AUTOMATIC == control_mode) ?
@@ -266,17 +493,71 @@ void vehicle_thread_entry(void * pvParameters)
         vehicle_command_t navigation_command;
         if(vehicle_command_mailbox_navigation_take(&navigation_command))
         {
+            bool const latch_request =
+                VEHICLE_COMMAND_NAVIGATION_MANUAL_LATCH == navigation_command.kind;
+            bool const rearm_acknowledgement =
+                VEHICLE_COMMAND_NAVIGATION_REARMED_STOP == navigation_command.kind;
+            if(latch_request && safety_manual_latched)
+            {
+                safety_latch_navigation_sequence = (uint8_t) navigation_command.sequence;
+            }
+
             bool const fresh_for_automatic =
                 ((int32_t) (navigation_command.received_tick - automatic_enter_tick) >= 0);
-            if((VEHICLE_MODE_AUTOMATIC == control_mode) && fresh_for_automatic)
+            bool const fresh_after_rearm = !awaiting_navigation_rearm ||
+                (rearm_acknowledgement && navigation_sequence_is_newer(
+                    navigation_command.sequence,
+                    safety_latch_navigation_sequence));
+
+            if(latch_request && !safety_manual_latched &&
+               !awaiting_navigation_rearm &&
+               (VEHICLE_MODE_AUTOMATIC == control_mode) && fresh_for_automatic)
             {
+                vehicle_result_t const latch_result = execute_command(&navigation_command);
+                if(VEHICLE_RESULT_OK == latch_result)
+                {
+                    control_mode = VEHICLE_MODE_MANUAL;
+                    safety_manual_latched = true;
+                    awaiting_navigation_rearm = false;
+                    safety_latch_tick = xTaskGetTickCount();
+                    safety_latch_navigation_sequence =
+                        (uint8_t) navigation_command.sequence;
+                    navigation_motion_active = false;
+                    navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                    g_printf("[VEHICLE][SAFE] M85 escape attempts exhausted; "
+                             "manual latch entered.\r\n");
+                }
+            }
+            else if((VEHICLE_MODE_AUTOMATIC == control_mode) &&
+                    !safety_manual_latched && fresh_for_automatic &&
+                    fresh_after_rearm)
+            {
+                awaiting_navigation_rearm = false;
                 vehicle_result_t const navigation_result =
                     execute_command(&navigation_command);
                 if(VEHICLE_RESULT_OK == navigation_result)
                 {
                     last_navigation_tick = xTaskGetTickCount();
+                    last_navigation_sequence = (uint8_t) navigation_command.sequence;
                     navigation_motion_active =
+                        !rearm_acknowledgement &&
                         !command_requests_stop(&navigation_command);
+                    if((VEHICLE_MANUAL_TURN_LEFT == navigation_command.manual_action) ||
+                       (VEHICLE_MANUAL_TURN_RIGHT == navigation_command.manual_action))
+                    {
+                        if(navigation_turn_direction != navigation_command.manual_action)
+                        {
+                            navigation_turn_effort = 0U;
+                        }
+                        navigation_turn_direction = navigation_command.manual_action;
+                        navigation_turn_speed_percent = navigation_command.speed_percent;
+                    }
+                    else if(VEHICLE_MANUAL_FORWARD == navigation_command.manual_action)
+                    {
+                        navigation_turn_direction = VEHICLE_MANUAL_STOP;
+                        navigation_turn_speed_percent = 0U;
+                        navigation_turn_effort = 0U;
+                    }
                 }
                 else if(navigation_result != last_command_error)
                 {

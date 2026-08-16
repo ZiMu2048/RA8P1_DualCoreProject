@@ -9,4 +9,7 @@
  */
 void navigation_frame_submit(const uint8_t * p_gray, uint32_t frame_sequence);
 
+/* CPU1在新的遥控AUTO命令生效后从IPC中断调用，只设置标志，不执行模型计算。 */
+void navigation_auto_rearm_from_isr(void);
+
 #endif /* NAVIGATION_NAVIGATION_RUNTIME_H_ */

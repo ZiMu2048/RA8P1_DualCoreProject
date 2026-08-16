@@ -1,0 +1,14 @@
+held_out_group,test_count,selected_candidate,safe_permission_threshold,true_danger,missed_danger,false_danger,true_safe
+太阳能板边缘中心旋转扫描.txt|1,27,MOTION_RIDGE_0.03,0.2,13,0,0,14
+左转极限.txt|1,30,IMAGE_ELASTIC_0.10,0.162,20,0,0,10
+safe.txt|1,45,IMAGE_RIDGE_0.03,0.191,0,0,0,45
+两太阳能板过度.txt|1,25,MOTION_RIDGE_0.03,0.236,0,0,0,25
+太阳能板直角边源.txt|1,8,IMAGE_RIDGE_0.03,0.181,8,0,0,0
+太阳能板直角边源.txt|2,12,IMAGE_RIDGE_0.03,0.228,0,0,1,11
+太阳能板直角边源.txt|3,4,IMAGE_RIDGE_0.03,0.213,0,0,0,4
+太阳能板直角边源.txt|4,3,IMAGE_RIDGE_0.03,0.213,3,0,0,0
+太阳能板直角边源.txt|5,27,IMAGE_RIDGE_0.03,0.222,18,0,0,9
+太阳能板直角边源.txt|6,35,IMAGE_RIDGE_0.03,0.227,9,0,1,25
+太阳能板直角边源.txt|7,25,IMAGE_RIDGE_0.10,0.232,0,0,9,16
+太阳能板直角边源.txt|9,47,IMAGE_ELASTIC_0.03,0.126,20,0,8,19
+太阳能板直角边源.txt|10,23,IMAGE_RIDGE_0.03,0.168,23,0,0,0

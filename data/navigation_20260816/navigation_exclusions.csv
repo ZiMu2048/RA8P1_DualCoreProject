@@ -1,0 +1,3 @@
+source_file,segment,reason
+两太阳能板带角度过度.txt,1,"Oblique crossing between two solar panels is outside the target operating scope"
+太阳能板直角边源.txt,8,"Source capture segment corresponding to oblique two-panel crossing"
